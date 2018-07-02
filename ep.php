@@ -3,6 +3,7 @@
 define('IDENT', 'NATAHA');
 define('IS_DEBUG', true);
 define('MAX_MESSAGE_LENGTH', 300);
+define ('FLOCK_SLEEP_INTERVAL', 500000);
 
 /**
  * Custom error handler
