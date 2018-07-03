@@ -10,8 +10,8 @@ function generateText($maxWords, $data) {
     if (empty($data)) {
         throw new \Exception('Bad data format');
     }
-    $out = array_rand($data); // initial word
-    while ($out = weighAndSelect($data[$out])) {
+    $out = array_rand($data['chain']); // initial word
+    while ($out = weighAndSelect($data['chain'][$out])) {
         $text[] = base64_decode($out);
         if (count($text) > $maxWords) {
             break;
@@ -72,7 +72,7 @@ function weighAndSelect($block) {
 
 $writeHumanReadable = true;
 
-if (!defined('IS_DEBUG') && !IS_DEBUG)
+if (!defined('IS_DEBUG') || !IS_DEBUG)
 {
     $input = file_get_contents("php://input"); // Retrieve information sent by webhook
     $sJ = json_decode($input, true); // decode JSON supplied by webhook to PHP array
@@ -126,10 +126,10 @@ if (preg_match("/нат(.*)блог/i", $nataha_name) == true) { // chisto rekla
 } 
 
 $fp = null;
-$fileName = $chatID . ".json";
+$fileName = "data.json";
 $chain = [];
 // только здесь необходима работа с файлом
-if (file_exists($chatID . ".json") == true) {
+if (file_exists($fileName) == true) {
     $fileSize = filesize($fileName);
     
     $fp = fopen($fileName, 'r+');
