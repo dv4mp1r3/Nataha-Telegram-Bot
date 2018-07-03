@@ -70,7 +70,7 @@ function weighAndSelect($block) {
     return $tmp[$rand];
 }
 
-$writeHumanReadable = true;
+$writeHumanReadable = false;
 
 if (!defined('IS_DEBUG') || !IS_DEBUG)
 {
@@ -128,37 +128,15 @@ if (preg_match("/нат(.*)блог/i", $nataha_name) == true) { // chisto rekla
 $fp = null;
 $fileName = "data.json";
 $chain = [];
-// только здесь необходима работа с файлом
-if (file_exists($fileName) == true) {
-    $fileSize = filesize($fileName);
-    
-    $fp = fopen($fileName, 'r+');
-    if (!$fp)
-    {
-        throw new \Exception('fopen error');
-    }
-    // ждем снятия блокировки
-    while (!flock($fp, LOCK_EX))
-    {
-        usleep(FLOCK_SLEEP_INTERVAL);
-    }
-    
-    if ($fileSize > 0)
-    {
-        $data = fread($fp, $fileSize);
-        rewind($fp);
-        $chain = json_decode($data, true);
-    }
-    
+
+if (
+    (strpos($input, 'reply_to_message') > 0 && strpos($nataha_name, 'reply_to_message') === false) ||
+    preg_match("/ната(.*)|натах|наталия|наталья|наташа|наташка|касперский|анекдот/i", $nataha_name) == true) {
+    $chain = json_decode(file_get_contents($fileName), true);
     if (!$chain)
     {
         $chain = [];
-    }       
-} 
-
-if (
-    preg_match("/reply_to_message\"(.*)username\":\"WeatherDcBot\"/i", $input) == true ||
-    preg_match("/ната(.*)|натах|наталия|наталья|наташа|наташка|касперский|анекдот/i", $nataha_name) == true) {
+    }
     $text = generateText(100, $chain);
     if (!$text)
         $text = "Мне нечего сказать. Мало данных";
@@ -169,16 +147,17 @@ if (
 }
 else 
 {   
-    header('Content-Type: text/html; charset=utf-8');
+    header('Content-Type: text/html; charset=utf-8');    
     $preparedText = strtolower($rawText);
     foreach ($filterRegEx as $pattern) {
         $preparedText = preg_replace($pattern, " ", $preparedText);
     }
-    ftruncate($fp, 0);
-    fwrite($fp, json_encode(train($preparedText, $chain)));
-    fflush($fp);    
-    flock($fp, LOCK_UN);
-    fclose($fp);
+    $chain = json_decode(file_get_contents($fileName), true);
+    if (!$chain)
+    {
+        $chain = [];
+    }
+    file_put_contents($fileName, json_encode(train($preparedText, $chain)));
     if ($writeHumanReadable) {
         file_put_contents($chatID . ".json.txt", print_r($chain, true));
     }
