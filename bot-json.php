@@ -27,18 +27,19 @@ function generateText($maxWords, $data) {
  * @return boolean|int
  */
 function train($message, $data) {
-    if (empty($message)) {
-        return false;
-    }
     $array = explode(" ", $message);
 
     foreach ($array as $num => $val) {
         $val = base64_encode($val);
-        $commit = (isset($data['chain'][$val]) ? $data['chain'][$val] : array()); // if there is already a block for this word, keep it, otherwise create one
-        $next = $array[$num + 1]; // the next word after the one currently selected
-        if (empty($next)) {
+        if (!$val)
+        {
+            continue;
+        }
+        $commit = (isset($data['chain'][$val]) ? $data['chain'][$val] : array()); // if there is already a block for this word, keep it, otherwise create one        
+        if (empty($array[$num + 1])) {
             continue; // if this word is EOL, continue to the next word
         }
+        $next = $array[$num + 1]; // the next word after the one currently selected
         $next = base64_encode($next);
         if (isset($commit[$next])) {
             $commit[$next] ++; // if the word already exists, increase the weight
@@ -127,23 +128,31 @@ if (preg_match("/нат(.*)блог/i", $nataha_name) == true) { // chisto rekla
 
 $fp = null;
 $fileName = "data.json";
-$chain = [];
+$chain = json_decode(file_get_contents($fileName), true);
+while($chain == false )
+{
+    $chain = json_decode(file_get_contents($fileName), true);
+    usleep(50000);
+}
 
 if (
     (strpos($input, 'reply_to_message') > 0 && strpos($nataha_name, 'reply_to_message') === false) ||
     preg_match("/ната(.*)|натах|наталия|наталья|наташа|наташка|касперский|анекдот/i", $nataha_name) == true) {
-    $chain = json_decode(file_get_contents($fileName), true);
-    if (!$chain)
-    {
-        $chain = [];
-    }
+
     $text = generateText(100, $chain);
     if (!$text)
         $text = "Мне нечего сказать. Мало данных";
-    $reply['method'] = "sendMessage";
-    $reply['chat_id'] = $chatID;
-    $reply['text'] = $text;
-    echo json_encode($reply);
+    if (IS_DEBUG)
+    {
+        echo $text.PHP_EOL;
+    }
+    else
+    {
+        $reply['method'] = "sendMessage";
+        $reply['chat_id'] = $chatID;
+        $reply['text'] = $text;
+        echo json_encode($reply);
+    }  
 }
 else 
 {   
@@ -152,12 +161,21 @@ else
     foreach ($filterRegEx as $pattern) {
         $preparedText = preg_replace($pattern, " ", $preparedText);
     }
-    $chain = json_decode(file_get_contents($fileName), true);
-    if (!$chain)
+    $putData = "false";
+    if (!empty($preparedText))
     {
-        $chain = [];
+        $putData = json_encode(train($preparedText, $chain));
+    }   
+    if ($putData == "false")
+    {
+        /*header("Content-Type: application/json");
+        $reply['method'] = "sendMessage";
+        $reply['chat_id'] = $chatID;
+        $reply['text'] = "ЧТО-ПОШЛО НЕ ТАК!!!! ДАМП ПОСЛЕДНЕГО СООБЩЕНИЯ\n:". json_encode($sJ);
+        echo json_encode($reply);*/
+        die();
     }
-    file_put_contents($fileName, json_encode(train($preparedText, $chain)));
+    file_put_contents($fileName, $putData, LOCK_EX);
     if ($writeHumanReadable) {
         file_put_contents($chatID . ".json.txt", print_r($chain, true));
     }
