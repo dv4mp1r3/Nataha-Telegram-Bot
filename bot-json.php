@@ -99,7 +99,7 @@ if (strlen($rawText) > MAX_MESSAGE_LENGTH) {
     throw new \Exception('Data length is bigger then 300');
 }
 $regExpData = [
-    "/натах(.*)сука|натах(.*)тупая|натах(.*)несешь/i" => "CAADAgADCQADaJpdDDa9pygUaeHvAg",
+    "/ресеп(.*)сука|ресеп(.*)тупая|ресеп(.*)несешь/i" => "CAADAgADCQADaJpdDDa9pygUaeHvAg",
     "/ахах/i" => "CAADAgADnQADaJpdDK2h3LaVb7oGAg",
     "/php|пых/i" => "CAADAgADEwADmqwRGPffQIaMmNCbAg",    
 ];
@@ -137,7 +137,7 @@ while($chain == false )
 
 if (
     (strpos($input, 'reply_to_message') > 0 && strpos($nataha_name, 'reply_to_message') === false) ||
-    preg_match("/ната(.*)|натах|наталия|наталья|наташа|наташка|касперский|анекдот/i", $nataha_name) == true) {
+    preg_match("/ресеп(.*)|ресепшен|ресептион|ресепшин|ресепшинъ|ресепшенъ/i", $nataha_name) == true) {
 
     $text = generateText(100, $chain);
     if (!$text)
