@@ -130,6 +130,11 @@ $regExpData = [
 
 $nataha_name = mb_strtolower($rawText);
 header("Content-Type: application/json");
+if ((string)$chatID !== AVAILABLE_CHAT_ID)
+{
+    sendMessage($chatID, "Я НЕ БУДУ ТУТ РАБОТАТЬ!");
+    die();
+}
 foreach ($regExpData as $regExp => $value) 
 {
     if (preg_match($regExp, $nataha_name))

@@ -3,8 +3,9 @@
 define('IDENT', 'dc7812flood_reception_bot');
 define('IS_DEBUG', true);
 define('MAX_MESSAGE_LENGTH', 300);
-define ('FLOCK_SLEEP_INTERVAL', 500000);
-define ('MAX_DB_READ_TRY', 15);
+define('FLOCK_SLEEP_INTERVAL', 500000);
+define('MAX_DB_READ_TRY', 15);
+define('AVAILABLE_CHAT_ID', '1111111');
 
 /**
  * Custom error handler
