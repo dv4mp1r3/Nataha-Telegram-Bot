@@ -1,9 +1,10 @@
 <?php
 
-define('IDENT', 'NATAHA');
+define('IDENT', 'dc7812flood_reception_bot');
 define('IS_DEBUG', true);
 define('MAX_MESSAGE_LENGTH', 300);
 define ('FLOCK_SLEEP_INTERVAL', 500000);
+define ('MAX_DB_READ_TRY', 15);
 
 /**
  * Custom error handler
