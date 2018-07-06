@@ -20,6 +20,14 @@ function generateText($maxWords, $data) {
     return implode(" ", $text);
 }
 
+function sendMessage($chatId, $text, $method = 'sendMessage')
+{
+    $reply['method'] = $method;
+    $reply['chat_id'] = $chatId;
+    $reply['text'] = $text;//"ЧТО-ПОШЛО НЕ ТАК!!!! ДАМП ПОСЛЕДНЕГО СООБЩЕНИЯ\n:". json_encode($sJ);
+    echo json_encode($reply);
+}
+
 /**
  * генерация/обновление цепи
  * @param string $message
@@ -71,6 +79,22 @@ function weighAndSelect($block) {
     return $tmp[$rand];
 }
 
+function isReply($message)
+{
+    if (empty($message['message']['reply_to_message']))
+    {
+        return false;
+    }
+    
+    if (empty($message['message']['reply_to_message']['from']))
+    {
+        return false;
+    }
+    
+    return $message['message']['reply_to_message']['from']['username'] === IDENT;
+    
+}
+
 $writeHumanReadable = false;
 
 if (!defined('IS_DEBUG') || !IS_DEBUG)
@@ -110,53 +134,44 @@ foreach ($regExpData as $regExp => $value)
 {
     if (preg_match($regExp, $nataha_name))
     {
-        $reply['method'] = "sendSticker";
-        $reply['chat_id'] = $chatID;
-        $reply['sticker'] = $value;
-        echo json_encode($reply);
+        sendMessage($chatID, $text, 'sendSticker');
         die();
     }
 }
 
 if (preg_match("/нат(.*)блог/i", $nataha_name) == true) { // chisto reklama
-    $reply['method'] = "sendMessage";
-    $reply['chat_id'] = $chatID;
-    $reply['text'] = "https://www.natalia-blog.ml/";    
-    echo json_encode($reply); 
+    sendMessage($chatID, "НЕТУ");
     die();
 } 
 
 $fp = null;
 $fileName = "data.json";
+$tryCount = 0;
 $chain = json_decode(file_get_contents($fileName), true);
 while($chain == false )
 {
+    if ($tryCount === MAX_DB_READ_TRY)
+    {
+        throw new \Exception("Can't get file content for $fileName");
+    }
+    $tryCount++;
     $chain = json_decode(file_get_contents($fileName), true);
-    usleep(50000);
+    usleep(FLOCK_SLEEP_INTERVAL);
 }
 
 if (
-    (strpos($input, 'reply_to_message') > 0 && strpos($nataha_name, 'reply_to_message') === false) ||
+    isReply($sJ) ||
     preg_match("/ресеп(.*)|ресепшен|ресептион|ресепшин|ресепшинъ|ресепшенъ/i", $nataha_name) == true) {
 
     $text = generateText(100, $chain);
     if (!$text)
+    {
         $text = "Мне нечего сказать. Мало данных";
-    if (IS_DEBUG)
-    {
-        echo $text.PHP_EOL;
-    }
-    else
-    {
-        $reply['method'] = "sendMessage";
-        $reply['chat_id'] = $chatID;
-        $reply['text'] = $text;
-        echo json_encode($reply);
     }  
+    sendMessage($chatID, $text);
 }
 else 
-{   
-    header('Content-Type: text/html; charset=utf-8');    
+{         
     $preparedText = strtolower($rawText);
     foreach ($filterRegEx as $pattern) {
         $preparedText = preg_replace($pattern, " ", $preparedText);
@@ -165,19 +180,21 @@ else
     if (!empty($preparedText))
     {
         $putData = json_encode(train($preparedText, $chain));
-    }   
-    if ($putData == "false")
-    {
-        /*header("Content-Type: application/json");
-        $reply['method'] = "sendMessage";
-        $reply['chat_id'] = $chatID;
-        $reply['text'] = "ЧТО-ПОШЛО НЕ ТАК!!!! ДАМП ПОСЛЕДНЕГО СООБЩЕНИЯ\n:". json_encode($sJ);
-        echo json_encode($reply);*/
-        die();
-    }
-    file_put_contents($fileName, $putData, LOCK_EX);
-    if ($writeHumanReadable) {
-        file_put_contents($chatID . ".json.txt", print_r($chain, true));
-    }
+        if ($putData !== "false")
+        {
+            file_put_contents($fileName, $putData, LOCK_EX);
+            if ($writeHumanReadable) {
+                file_put_contents($chatID . ".json.txt", print_r($chain, true));
+            }
+        }
+        else
+        {
+            if (defined('IS_DEBUG') && IS_DEBUG)
+            {
+                sendMessage($chatID, "ЧТО-ПОШЛО НЕ ТАК!!!! ДАМП ПОСЛЕДНЕГО СООБЩЕНИЯ\n:". json_encode($sJ));
+            }
+        } 
+    }  
+    header('Content-Type: text/html; charset=utf-8');
 }
-
+  
