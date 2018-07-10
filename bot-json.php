@@ -17,7 +17,18 @@ function generateText($maxWords, $data) {
             break;
         }
     }
-    return implode(" ", $text);
+    return customTextProcessing(implode(" ", $text));
+}
+
+/**
+ * Своя логика обработки сгенерированного текста
+ * @param string $text результат выполнения generateText
+ * @return string
+ */
+function customTextProcessing($text)
+{
+    $text = str_ireplace(' слава ', ' слава @uberhahn ', $text);
+    return $text;
 }
 
 function sendMessage($chatId, $text, $method = 'sendMessage')
