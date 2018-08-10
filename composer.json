@@ -1,0 +1,16 @@
+{
+    "name": "empty name",
+    "description": "empty description",
+    "authors": [
+        {
+            "name": "dv4mp1r3",
+            "email": "admin@mainframe.some"
+        }
+    ],
+    "require": {
+        "dg/twitter-php" : "*"
+    },
+    "autoload": {
+        "psr-4": {"Bots\\": "Bots/"}
+    }
+}

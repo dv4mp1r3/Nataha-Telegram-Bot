@@ -1,11 +1,7 @@
 <?php
 
-define('IDENT', 'dc7812flood_reception_bot');
-define('IS_DEBUG', true);
-define('MAX_MESSAGE_LENGTH', 300);
-define('FLOCK_SLEEP_INTERVAL', 500000);
-define('MAX_DB_READ_TRY', 15);
-define('AVAILABLE_CHAT_ID', '1111111');
+require_once './config.php';
+require_once './vendor/autoload.php';
 
 /**
  * Custom error handler
@@ -79,8 +75,12 @@ try
     {
         require_once './testData.php';
     }
-    require_once './bot-json.php';
+    
+    //require_once './bot-json.php';
+    $bot = new \Bots\TelegramMarkovBot();
+    $bot->execute();
 } catch (\Exception $ex) 
 {
     __log(LOG_ALERT, null, $ex);
+    header('Content-Type: text/html; charset=utf-8');
 }
