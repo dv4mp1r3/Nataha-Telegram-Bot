@@ -105,7 +105,7 @@ class TelegramMarkovBot extends TelegramBot
     {
         parent::execute();
 
-        if ((string) $this->chatId !== AVAILABLE_CHAT_ID) {
+        if (!in_array($this->chatId, AVAILABLE_CHAT_ID)) {
             $this->sendMessage($this->chatId, "Я НЕ БУДУ ТУТ РАБОТАТЬ!");
         }
 
