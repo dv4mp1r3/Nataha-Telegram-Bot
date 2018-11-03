@@ -11,6 +11,9 @@
         "dg/twitter-php" : "*"
     },
     "autoload": {
-        "psr-4": {"Bots\\": "Bots/"}
+        "psr-4": {
+            "Bots\\": "Bots/",
+            "Commands\\": "Commands/"
+        }
     }
 }

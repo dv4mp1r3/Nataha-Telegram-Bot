@@ -9,13 +9,7 @@ class TelegramMarkovBot extends TelegramBot
         "punctiationFilter" => "/(?<!\w)[.,!]/",
         "newlineFilter" => "/\r|\n/",
     ];
-    protected static $regExpData = [
-        "/ресеп(.*)сука|ресеп(.*)тупая|ресеп(.*)несешь/i" => "CAADAgADCQADaJpdDDa9pygUaeHvAg",
-        "/ахах/i" => "CAADAgADnQADaJpdDK2h3LaVb7oGAg",
-        "/php|пых/i" => "CAADAgADEwADmqwRGPffQIaMmNCbAg",
-    ];
 
-    const MESSAGE_ERROR_TEMPLATE = "ЧТО-ПОШЛО НЕ ТАК!!!! ДАМП ПОСЛЕДНЕГО СООБЩЕНИЯ\n:";
     const ARRAY_KEY_CHAIN = 'chain';
 
     protected static $writeHumanReadable = false;
@@ -123,6 +117,7 @@ class TelegramMarkovBot extends TelegramBot
     /**
      * Обновление файла с цепью
      * @param array $chain
+     * @throws \Exception
      */
     protected function updateDataBase($chain)
     {
@@ -135,10 +130,7 @@ class TelegramMarkovBot extends TelegramBot
                     file_put_contents($this->chatId . ".json.txt", print_r($chain, true), LOCK_EX);
                 }
             } else {
-                if (defined('IS_DEBUG') && IS_DEBUG) {
-                    $this->sendMessage(ID_CREATOR,
-                        self::MESSAGE_ERROR_TEMPLATE.json_encode($this->decodedInput));
-                }
+                throw new \Exception('$putData is false (file_put_contents error)');
             }
         }
     }
@@ -166,7 +158,10 @@ class TelegramMarkovBot extends TelegramBot
     public function execute()
     {
         parent::execute();
-        $chain = $this->getChain();
-        $this->updateDataBase($chain);
+        if (!$this->isCommandAlreadyExecuted)
+        {
+            $chain = $this->getChain();
+            $this->updateDataBase($chain);
+        }
     }
 }

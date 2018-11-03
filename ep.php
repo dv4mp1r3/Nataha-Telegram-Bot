@@ -82,6 +82,7 @@ try
     
     //require_once './bot-json.php';
     $bot = new \Bots\TelegramSecurityExpertBot();
+    $bot->registerCommand('/hashid', \Commands\HashIdCommand::class);
     $bot->execute();
 } catch (\Exception $ex) 
 {
