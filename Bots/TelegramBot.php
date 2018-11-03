@@ -5,7 +5,7 @@ namespace Bots;
 /**
  * Базовый бот для обработки входящей инфы от телеграма
  */
-class TelegramBot extends BaseBot
+class TelegramBot implements IBot
 {
     const MESSAGE_TYPE_TEXT = 'sendMessage';
     const MESSAGE_TYPE_STICKER = 'sendSticker';

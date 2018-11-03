@@ -1,4 +1,5 @@
 <?php
+
 namespace Bots;
 
 class TelegramMarkovBot extends TelegramBot
@@ -13,7 +14,10 @@ class TelegramMarkovBot extends TelegramBot
         "/ахах/i" => "CAADAgADnQADaJpdDK2h3LaVb7oGAg",
         "/php|пых/i" => "CAADAgADEwADmqwRGPffQIaMmNCbAg",
     ];
-    
+
+    const MESSAGE_ERROR_TEMPLATE = "ЧТО-ПОШЛО НЕ ТАК!!!! ДАМП ПОСЛЕДНЕГО СООБЩЕНИЯ\n:";
+    const ARRAY_KEY_CHAIN = 'chain';
+
     protected static $writeHumanReadable = false;
 
     /**
@@ -21,15 +25,17 @@ class TelegramMarkovBot extends TelegramBot
      * @param integer $maxWords
      * @param array $data
      * @return string
+     * @throws \Exception
      */
     protected function generateText($maxWords, $data)
     {
+        $text = array();
         $customTextProcesingFunctionName = 'customTextProcessing';
         if (empty($data)) {
             throw new \Exception('Bad data format');
         }
-        $out = array_rand($data['chain']); // initial word
-        while ($out = $this->weighAndSelect($data['chain'][$out])) {
+        $out = array_rand($data[self::ARRAY_KEY_CHAIN]); // initial word
+        while ($out = $this->weighAndSelect($data[self::ARRAY_KEY_CHAIN][$out])) {
             $text[] = base64_decode($out);
             if (count($text) > $maxWords) {
                 break;
@@ -47,7 +53,7 @@ class TelegramMarkovBot extends TelegramBot
      * генерация/обновление цепи
      * @param string $message
      * @param array $data
-     * @return boolean|int
+     * @return array
      */
     protected function train($message, $data)
     {
@@ -59,29 +65,29 @@ class TelegramMarkovBot extends TelegramBot
                 continue;
             }
             // if there is already a block for this word, keep it, otherwise create one   
-            $commit = (isset($data['chain'][$val]) ? $data['chain'][$val] : array());      
+            $commit = (isset($data[self::ARRAY_KEY_CHAIN][$val]) ? $data[self::ARRAY_KEY_CHAIN][$val] : array());
             if (empty($array[$num + 1])) {
                 // if this word is EOL, continue to the next word
                 continue;
             }
             // the next word after the one currently selected
-            $next = $array[$num + 1]; 
+            $next = $array[$num + 1];
             $next = base64_encode($next);
             if (isset($commit[$next])) {
                 // if the word already exists, increase the weight
-                $commit[$next] ++; 
+                $commit[$next]++;
             } else {
                 // otherwise save the word with a weight of 1
-                $commit[$next] = 1; 
+                $commit[$next] = 1;
             }
             // commit to the chain
-            $data['chain'][$val] = $commit; 
+            $data[self::ARRAY_KEY_CHAIN][$val] = $commit;
         }
         return $data;
     }
 
     /**
-     * 
+     *
      * @param type $block
      * @return boolean
      */
@@ -101,69 +107,66 @@ class TelegramMarkovBot extends TelegramBot
         return $tmp[$rand];
     }
 
-    public function execute()
+    /**
+     * Фильтрация сообщения по регуляркам
+     * @return null|string|string[]
+     */
+    protected function filterMessage()
     {
-        parent::execute();
-
-        if (!in_array($this->chatId, AVAILABLE_CHAT_ID)) {
-            $this->sendMessage($this->chatId, "Я НЕ БУДУ ТУТ РАБОТАТЬ!");
+        $preparedText = strtolower($this->rawText);
+        foreach (self::$filterRegEx as $pattern) {
+            $preparedText = preg_replace($pattern, " ", $preparedText);
         }
+        return $preparedText;
+    }
 
-        $botName = mb_strtolower($this->rawText);
-
-        foreach (self::$regExpData as $regExp => $value) {
-            if (preg_match($regExp, $botName)) {
-                $this->sendMessage($this->chatId, $value, 'sendSticker');
-                return;
-            }
-        }
-
-        if (preg_match("/нат(.*)блог/i", $botName) == true) {
-            sendMessage($this->chatId, "НЕТУ");
-            return;
-        }
-
-        $fp = null;
-        $fileName = CONFIG_PATH;
-        $tryCount = 0;
-        $chain = json_decode(file_get_contents($fileName), true);
-        while ($chain == false) {
-            if ($tryCount === MAX_DB_READ_TRY) {
-                throw new \Exception("Can't get file content for $fileName");
-            }
-            $tryCount++;
-            $chain = json_decode(file_get_contents($fileName), true);
-            usleep(FLOCK_SLEEP_INTERVAL);
-        }
-
-        if (
-            $this->isReply($this->decodedInput) ||
-            preg_match("/ресеп(.*)|ресепшен|ресептион|ресепшин|ресепшинъ|ресепшенъ/i", $botName) == true) {
-
-            $text = $this->generateText(100, $chain);
-            if (!$text) {
-                $text = "Мне нечего сказать. Мало данных";
-            }
-            $this->sendMessage($this->chatId, $text);
-        } else {
-            $preparedText = strtolower($this->rawText);
-            foreach (self::$filterRegEx as $pattern) {
-                $preparedText = preg_replace($pattern, " ", $preparedText);
-            }
-            $putData = "false";
-            if (!empty($preparedText)) {
-                $putData = json_encode($this->train($preparedText, $chain));
-                if ($putData !== "false") {
-                    file_put_contents($fileName, $putData, LOCK_EX);
-                    if (self::$writeHumanReadable) {
-                        file_put_contents($this->chatId . ".json.txt", print_r($chain, true), LOCK_EX);
-                    }
-                } else {
-                    if (defined('IS_DEBUG') && IS_DEBUG) {
-                        $this->sendMessage($this->chatId, "ЧТО-ПОШЛО НЕ ТАК!!!! ДАМП ПОСЛЕДНЕГО СООБЩЕНИЯ\n:" . json_encode($this->decodedInput));
-                    }
+    /**
+     * Обновление файла с цепью
+     * @param array $chain
+     */
+    protected function updateDataBase($chain)
+    {
+        $preparedText = $this->filterMessage();
+        if (!empty($preparedText)) {
+            $putData = json_encode($this->train($preparedText, $chain));
+            if ($putData !== "false") {
+                file_put_contents(CONFIG_PATH, $putData, LOCK_EX);
+                if (self::$writeHumanReadable) {
+                    file_put_contents($this->chatId . ".json.txt", print_r($chain, true), LOCK_EX);
+                }
+            } else {
+                if (defined('IS_DEBUG') && IS_DEBUG) {
+                    $this->sendMessage(ID_CREATOR,
+                        self::MESSAGE_ERROR_TEMPLATE.json_encode($this->decodedInput));
                 }
             }
         }
+    }
+
+    /**
+     * Чтение и возврат цепи в виде ассоциированного массива
+     * @return array
+     * @throws \Exception
+     */
+    protected function getChain()
+    {
+        $tryCount = 0;
+        $chain = json_decode(file_get_contents(CONFIG_PATH), true);
+        while (!$chain) {
+            if ($tryCount === MAX_DB_READ_TRY) {
+                throw new \Exception("Can't get file content for " . CONFIG_PATH);
+            }
+            $tryCount++;
+            $chain = json_decode(file_get_contents(CONFIG_PATH), true);
+            usleep(FLOCK_SLEEP_INTERVAL);
+        }
+        return $chain;
+    }
+
+    public function execute()
+    {
+        parent::execute();
+        $chain = $this->getChain();
+        $this->updateDataBase($chain);
     }
 }

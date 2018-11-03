@@ -43,6 +43,10 @@ function errorHandler($errno, $errstr, $errfile, $errline)
  */
 function __log($type, $message, $ex = null)
 {
+    if (!defined('LOG_LOCAL7'))
+    {
+        return;
+    }
     $logIsOpened = openlog(IDENT, LOG_ODELAY, LOG_LOCAL7);
     if ($logIsOpened)
     {
@@ -77,7 +81,7 @@ try
     }
     
     //require_once './bot-json.php';
-    $bot = new \Bots\TelegramMarkovBot();
+    $bot = new \Bots\TelegramSecurityExpertBot();
     $bot->execute();
 } catch (\Exception $ex) 
 {
