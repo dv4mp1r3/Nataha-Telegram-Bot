@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e519c08032543b6e456c398f07bc554e",
+    "content-hash": "5167773a6013e2628a479dde268d54e7",
     "packages": [
         {
             "name": "dg/twitter-php",
