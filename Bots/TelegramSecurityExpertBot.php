@@ -37,7 +37,7 @@ class TelegramSecurityExpertBot extends TelegramMarkovBot
         }
 
         if (preg_match("/сосурити(.*)блог/i", $lowerRawText)) {
-            sendMessage($this->chatId, "НЕТУ");
+            $this->sendMessage($this->chatId, "НЕТУ");
             return;
         }
 
