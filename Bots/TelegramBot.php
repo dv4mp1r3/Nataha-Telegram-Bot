@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Bots;
 
 use Commands\ICommand;
@@ -12,11 +14,11 @@ class TelegramBot implements IBot
     const MESSAGE_ERROR_TEMPLATE = "SOMETHING WRONG\n:";
     const MESSAGE_TYPE_TEXT = 'sendMessage';
     const MESSAGE_TYPE_STICKER = 'sendSticker';
-    
+
     protected $decodedInput = '';
-    
+
     protected $rawText = '';
-    
+
     protected $chatId;
 
     /**
@@ -33,32 +35,29 @@ class TelegramBot implements IBot
      * @var bool
      */
     protected $isCommandAlreadyExecuted = false;
-    
+
     public function __construct()
     {
         $keyMessage = 'message';
-        if (!defined('IS_DEBUG') || !IS_DEBUG)
-        {
-            $input = file_get_contents("php://input"); 
+        if (!defined('IS_DEBUG') || !IS_DEBUG) {
+            $input = file_get_contents("php://input");
             $sJ = json_decode($input, true);
-        }
-        else
-        {
+        } else {
             global $testData;
             $sJ = $testData;
         }
-        
+
         if (!is_array($sJ) || !isset($sJ[$keyMessage]['chat']['id'])) {
             throw new \Exception('Bad data format');
         }
-        
+
         $this->decodedInput = $sJ;
-        
+
         $this->rawText = $this->decodedInput[$keyMessage]['text'];
         if (strlen($this->rawText) > MAX_MESSAGE_LENGTH) {
             throw new \Exception('Data length is bigger then 300');
         }
-        
+
         $this->chatId = $this->decodedInput[$keyMessage]['chat']['id'];
     }
 
@@ -68,10 +67,9 @@ class TelegramBot implements IBot
      * @param string $commandClassName
      * @return bool
      */
-    public function registerCommand($command, $commandClassName)
+    public function registerCommand(string $command, string $commandClassName): bool
     {
-        if (!class_exists($commandClassName) || !is_string($command))
-        {
+        if (!class_exists($commandClassName) || !is_string($command)) {
             return false;
         }
 
@@ -87,10 +85,9 @@ class TelegramBot implements IBot
      * @return array
      * @throws \ErrorException
      */
-    protected function parseCommandArgs($commandName)
+    protected function parseCommandArgs(string $commandName): array
     {
-        if (!function_exists('mb_explode'))
-        {
+        if (!function_exists('mb_explode')) {
             throw new \ErrorException('Function mb_explode is not exists');
         }
         $argsString = mb_strcut($this->rawText, mb_strlen($commandName));
@@ -99,20 +96,16 @@ class TelegramBot implements IBot
 
     /**
      * Попытка обработки зарегистрированных команд
-     * @see registerCommand
      * @return mixed
+     * @see registerCommand
      */
-    public function execute()
+    public function execute(): void
     {
-        try
-        {
-            foreach ($this->registeredCommands as $commandName => $className)
-            {
-                if (mb_stripos($this->rawText, $commandName) === 0)
-                {
+        try {
+            foreach ($this->registeredCommands as $commandName => $className) {
+                if (mb_stripos($this->rawText, $commandName) === 0) {
                     $command = new $className();
-                    if (!($command instanceof ICommand))
-                    {
+                    if (!($command instanceof ICommand)) {
                         throw new \LogicException("command $className is not instance of ICommand");
                     }
                     $payload = $this->parseCommandArgs($commandName);
@@ -122,12 +115,9 @@ class TelegramBot implements IBot
                     return;
                 }
             }
-        }
-        catch (\Exception $ex)
-        {
-            if (defined('IS_DEBUG') && IS_DEBUG && defined('ID_CREATOR'))
-            {
-                $this->sendMessage(ID_CREATOR,$this->buildErrorReport());
+        } catch (\Exception $ex) {
+            if (defined('IS_DEBUG') && IS_DEBUG && defined('ID_CREATOR')) {
+                $this->sendMessage(ID_CREATOR, $this->buildErrorReport());
             }
         }
     }
@@ -137,32 +127,30 @@ class TelegramBot implements IBot
      * @param \Exception|null $ex
      * @return string
      */
-    protected function buildErrorReport($ex = null)
+    protected function buildErrorReport(\Exception $ex = null): string
     {
         $tgMessage = json_encode($this->decodedInput);
         $stackTrace = '';
-        if ($ex instanceof \Exception)
-        {
-            $stackTrace = "STACK TRACE:\n".$ex->getTraceAsString();
+        if ($ex instanceof \Exception) {
+            $stackTrace = "STACK TRACE:\n" . $ex->getTraceAsString();
         }
 
-        return self::MESSAGE_ERROR_TEMPLATE."$tgMessage\n.$stackTrace";
+        return self::MESSAGE_ERROR_TEMPLATE . "$tgMessage\n.$stackTrace";
     }
-    
+
     /**
-     * 
+     *
      * @param string $chatId
      * @param string $text
      * @param string $method
      * @throws \InvalidArgumentException
      */
-    protected function sendMessage($chatId, $text, $method = 'sendMessage')
+    protected function sendMessage(string $chatId, string $text, string $method = 'sendMessage')
     {
         header("Content-Type: application/json");
         $reply['method'] = $method;
         $reply['chat_id'] = $chatId;
-        switch($method)
-        {
+        switch ($method) {
             case TelegramBot::MESSAGE_TYPE_TEXT:
                 $reply['text'] = $text;
                 break;
@@ -174,23 +162,21 @@ class TelegramBot implements IBot
         }
         echo json_encode($reply);
     }
-    
+
     /**
-     * 
+     *
      * @param array $message
      * @return boolean
      */
-    public function isReply($message)
+    public function isReply(array $message): bool
     {
         $keyReplyTo = 'reply_to_message';
         $keyMessage = 'message';
-        if (empty($message[$keyMessage][$keyReplyTo]))
-        {
+        if (empty($message[$keyMessage][$keyReplyTo])) {
             return false;
         }
 
-        if (empty($message[$keyMessage][$keyReplyTo]['from']))
-        {
+        if (empty($message[$keyMessage][$keyReplyTo]['from'])) {
             return false;
         }
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Bots;
 
 class TelegramMarkovBot extends TelegramBot
@@ -21,15 +23,20 @@ class TelegramMarkovBot extends TelegramBot
      * @return string
      * @throws \Exception
      */
-    protected function generateText($maxWords, $data)
+    protected function generateText(int $maxWords, array $data): string
     {
-        $text = array();
+        $text = [];
         $customTextProcesingFunctionName = 'customTextProcessing';
         if (empty($data)) {
             throw new \Exception('Bad data format');
         }
         $out = array_rand($data[self::ARRAY_KEY_CHAIN]); // initial word
-        while ($out = $this->weighAndSelect($data[self::ARRAY_KEY_CHAIN][$out])) {
+        while (true) {
+            $tmp = $data[self::ARRAY_KEY_CHAIN][$out];
+            if (is_null($tmp)) {
+                break;
+            }
+            $out = $this->weighAndSelect($tmp);
             $text[] = base64_decode($out);
             if (count($text) > $maxWords) {
                 break;
@@ -49,7 +56,7 @@ class TelegramMarkovBot extends TelegramBot
      * @param array $data
      * @return array
      */
-    protected function train($message, $data)
+    protected function train(string $message, array $data): array
     {
         $array = explode(" ", $message);
 
@@ -82,14 +89,16 @@ class TelegramMarkovBot extends TelegramBot
 
     /**
      *
-     * @param type $block
+     * @param array $block
      * @return boolean
      */
-    function weighAndSelect($block)
+    protected function weighAndSelect(array $block)
     {
         if (empty($block)) {
             return false;
         }
+
+        $tmp = [];
 
         foreach ($block as $key => $weight) {
             for ($i = 1; $i <= $weight; $i++) {
@@ -102,26 +111,16 @@ class TelegramMarkovBot extends TelegramBot
     }
 
     /**
-     * Фильтрация сообщения по регуляркам
-     * @return null|string|string[]
+     * Обновление файла с цепью
+     * @param array $chain
+     * @throws \Exception
      */
-    protected function filterMessage()
+    protected function updateDataBase(array $chain): void
     {
         $preparedText = strtolower($this->rawText);
         foreach (self::$filterRegEx as $pattern) {
             $preparedText = preg_replace($pattern, " ", $preparedText);
         }
-        return $preparedText;
-    }
-
-    /**
-     * Обновление файла с цепью
-     * @param array $chain
-     * @throws \Exception
-     */
-    protected function updateDataBase($chain)
-    {
-        $preparedText = $this->filterMessage();
         if (!empty($preparedText)) {
             $putData = json_encode($this->train($preparedText, $chain));
             if ($putData !== "false") {
@@ -140,7 +139,7 @@ class TelegramMarkovBot extends TelegramBot
      * @return array
      * @throws \Exception
      */
-    protected function getChain()
+    protected function getChain(): array
     {
         $tryCount = 0;
         $chain = json_decode(file_get_contents(CONFIG_PATH), true);
@@ -155,11 +154,10 @@ class TelegramMarkovBot extends TelegramBot
         return $chain;
     }
 
-    public function execute()
+    public function execute(): void
     {
         parent::execute();
-        if (!$this->isCommandAlreadyExecuted)
-        {
+        if (!$this->isCommandAlreadyExecuted) {
             $chain = $this->getChain();
             $this->updateDataBase($chain);
         }

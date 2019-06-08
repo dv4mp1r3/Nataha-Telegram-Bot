@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Commands;
 
 
@@ -13,5 +15,5 @@ interface ICommand
      * и как декодируется сообщение
      * @return string результат выполнения
      */
-    public function run($args, $decodedInput = null);
+    public function run(array $args, array $decodedInput = []): string;
 }

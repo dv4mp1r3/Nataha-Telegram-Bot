@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Bots;
 
 
@@ -11,14 +13,13 @@ class TelegramSecurityExpertBot extends TelegramMarkovBot
     protected static $regExpData = [
         "/ресеп(.*)сука|ресеп(.*)тупая|ресеп(.*)несешь/i" => "CAADAgADCQADaJpdDDa9pygUaeHvAg",
         "/ахах/i" => "CAADAgADnQADaJpdDK2h3LaVb7oGAg",
-        "/php|пых/i" => "CAADAgADEwADmqwRGPffQIaMmNCbAg",
+        //"/php|пых/i" => "CAADAgADEwADmqwRGPffQIaMmNCbAg",
     ];
 
-    public function execute()
+    public function execute(): void
     {
         parent::execute();
-        if ($this->isCommandAlreadyExecuted)
-        {
+        if ($this->isCommandAlreadyExecuted) {
             return;
         }
 

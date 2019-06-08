@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Commands;
 
 
@@ -9,11 +11,9 @@ class HashIdCommand implements ICommand
     const ARGS_INDEX_HASH = 0;
 
     /**
-     * @param $args
-     * @param array $decodedInput
-     * @return string
+     * @inheritDoc
      */
-    public function run($args, $decodedInput = null)
+    public function run(array $args, $decodedInput = []) : string
     {
         if (!is_array($args))
         {
@@ -60,7 +60,7 @@ class HashIdCommand implements ICommand
      * @param array $data
      * @return string
      */
-    protected function addHashesNames($data)
+    protected function addHashesNames(array $data) : string
     {
         $result = '';
         foreach ($data as &$hash)
