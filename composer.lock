@@ -8,23 +8,29 @@
     "packages": [
         {
             "name": "dg/twitter-php",
-            "version": "v3.7",
+            "version": "v4.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dg/twitter-php.git",
-                "reference": "d8bb9f21dfc31d06641ee60c04f2850b4d4801b5"
+                "reference": "5ef6a383aae1932bf1494fd37d26bd87093c01ba"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dg/twitter-php/zipball/d8bb9f21dfc31d06641ee60c04f2850b4d4801b5",
-                "reference": "d8bb9f21dfc31d06641ee60c04f2850b4d4801b5",
+                "url": "https://api.github.com/repos/dg/twitter-php/zipball/5ef6a383aae1932bf1494fd37d26bd87093c01ba",
+                "reference": "5ef6a383aae1932bf1494fd37d26bd87093c01ba",
                 "shasum": ""
             },
             "require": {
                 "ext-curl": "*",
-                "php": ">=5.4.0"
+                "ext-json": "*",
+                "php": ">=7.1"
             },
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "4.0-dev"
+                }
+            },
             "autoload": {
                 "classmap": [
                     "src/"
@@ -46,7 +52,7 @@
                 "oauth",
                 "twitter"
             ],
-            "time": "2018-03-15T10:07:08+00:00"
+            "time": "2020-01-21T09:14:16+00:00"
         }
     ],
     "packages-dev": [],

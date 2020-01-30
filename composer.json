@@ -13,7 +13,8 @@
     "autoload": {
         "psr-4": {
             "Bots\\": "Bots/",
-            "Commands\\": "Commands/"
+            "Commands\\": "Commands/",
+            "ResourceParsers\\": "ResourceParsers/"
         }
     }
 }
