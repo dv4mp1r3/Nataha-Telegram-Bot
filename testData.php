@@ -2,7 +2,7 @@
 
 $testData = [
     'message' => [
-        'chat' => ['id' => 'data'],
-        'text' => 'hello, world!',
+        'chat' => ['id' => '-1001084579032'],
+        'text' => 'сосурити',
         ],    
 ];

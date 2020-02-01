@@ -2,6 +2,10 @@
 
 declare(strict_types=1);
 
+use Bots\TelegramSecurityExpertBot;
+use Commands\CommandListener;
+use Commands\HashIdCommand;
+
 require_once './config.php';
 require_once './vendor/autoload.php';
 
@@ -73,8 +77,9 @@ try {
     if (defined('IS_DEBUG') && IS_DEBUG) {
         require_once './testData.php';
     }
-    $bot = new \Bots\TelegramSecurityExpertBot();
-    $bot->registerCommand('/hashid', \Commands\HashIdCommand::class);
+    $bot = new TelegramSecurityExpertBot();
+    $bot->setCommandListener((new CommandListener())
+        ->addCommand('/hashid', new HashIdCommand()));
     $bot->execute();
 } catch (\Exception $ex) {
     __log(LOG_ALERT, '', $ex);

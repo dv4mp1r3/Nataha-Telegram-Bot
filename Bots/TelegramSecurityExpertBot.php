@@ -42,17 +42,14 @@ class TelegramSecurityExpertBot extends TelegramMarkovBot
             return;
         }
 
-        $chain = $this->getChain();
         if (
             $this->isReply($this->decodedInput) ||
             preg_match("/сосур(.*)|сосурити|сусурька|сасурян|сосурян/i", $lowerRawText)) {
-            $text = $this->generateText(100, $chain);
+            $text = $this->markov->generateText(100);
             if (!$text) {
                 $text = self::MESSAGE_LOW_DATA;
             }
             $this->sendMessage($this->chatId, $text);
-        } else {
-            $this->updateDataBase($chain);
         }
     }
 }

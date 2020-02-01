@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace Bots;
 
-use Commands\ICommand;
-
 /**
  * Базовый бот для обработки входящей инфы от телеграма
  */
-class TelegramBot implements IBot
+class TelegramBot extends AbstractBaseBot
 {
     const MESSAGE_ERROR_TEMPLATE = "SOMETHING WRONG\n:";
     const MESSAGE_TYPE_TEXT = 'sendMessage';
@@ -20,14 +18,6 @@ class TelegramBot implements IBot
     protected $rawText = '';
 
     protected $chatId;
-
-    /**
-     * key-value массив для обработки команд
-     * key - команда, value - класс для обработки
-     * @see execute
-     * @var array
-     */
-    protected $registeredCommands = [];
 
     /**
      * Устанавливается в true после первой выполненной команды
@@ -62,39 +52,6 @@ class TelegramBot implements IBot
     }
 
     /**
-     * Добавление команды на обработку
-     * @param string $command
-     * @param string $commandClassName
-     * @return bool
-     */
-    public function registerCommand(string $command, string $commandClassName): bool
-    {
-        if (!class_exists($commandClassName) || !is_string($command)) {
-            return false;
-        }
-
-        $this->registeredCommands[$command] = $commandClassName;
-        return true;
-    }
-
-    /**
-     * В случае если боту передана команда - парсит аргументы
-     * и возвращает их в виде массива
-     * В качестве разделителя используется пробел
-     * @param string $commandName
-     * @return array
-     * @throws \ErrorException
-     */
-    protected function parseCommandArgs(string $commandName): array
-    {
-        if (!function_exists('mb_explode')) {
-            throw new \ErrorException('Function mb_explode is not exists');
-        }
-        $argsString = mb_strcut($this->rawText, mb_strlen($commandName));
-        return mb_explode(' ', $argsString);
-    }
-
-    /**
      * Попытка обработки зарегистрированных команд
      * @return mixed
      * @see registerCommand
@@ -102,18 +59,10 @@ class TelegramBot implements IBot
     public function execute(): void
     {
         try {
-            foreach ($this->registeredCommands as $commandName => $className) {
-                if (mb_stripos($this->rawText, $commandName) === 0) {
-                    $command = new $className();
-                    if (!($command instanceof ICommand)) {
-                        throw new \LogicException("command $className is not instance of ICommand");
-                    }
-                    $payload = $this->parseCommandArgs($commandName);
-                    $result = $command->run($payload, $this->decodedInput);
-                    $this->isCommandAlreadyExecuted = true;
-                    $this->sendMessage($this->chatId, $result);
-                    return;
-                }
+            if ($this->commandListener->isCommand($this->rawText)) {
+                $this->isCommandAlreadyExecuted = true;
+                $result = $this->commandListener->executeFoundCommand();
+                $this->sendMessage($this->chatId, $result);
             }
         } catch (\Exception $ex) {
             if (defined('IS_DEBUG') && IS_DEBUG && defined('ID_CREATOR')) {

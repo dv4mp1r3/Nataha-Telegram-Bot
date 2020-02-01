@@ -14,7 +14,8 @@
         "psr-4": {
             "Bots\\": "Bots/",
             "Commands\\": "Commands/",
-            "ResourceParsers\\": "ResourceParsers/"
+            "ResourceParsers\\": "ResourceParsers/",
+            "Misc\\": "Misc"
         }
     }
 }
