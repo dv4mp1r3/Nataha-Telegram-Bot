@@ -77,6 +77,12 @@ try {
     if (defined('IS_DEBUG') && IS_DEBUG) {
         require_once './testData.php';
     }
+    global  $twitchData;
+    /*$bot = new \Bots\TwitchSecurityExpertBot(
+        TWITCH_DEFAULT_SERVER,
+        TWITCH_DEFAULT_PORT,
+        $twitchData['username'], $twitchData['password'], ['dv4mp1r3'], CONFIG_PATH);
+    $bot->execute();*/
     $bot = new TelegramSecurityExpertBot();
     $bot->setCommandListener((new CommandListener())
         ->addCommand('/hashid', new HashIdCommand()));

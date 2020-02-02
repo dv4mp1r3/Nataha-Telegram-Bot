@@ -17,16 +17,16 @@ class SocketBot implements IBot
      */
     protected $port;
 
+    /**
+     * @var resource
+     */
+    private $s;
+
     public function __construct(string $server, string $port)
     {
         $this->server = $server;
         $this->port = $port;
     }
-
-    /**
-     * @var resource
-     */
-    private $s;
 
     public function execute() : void
     {
@@ -41,7 +41,8 @@ class SocketBot implements IBot
 
     protected function openConnection()
     {
-        if (socket_connect($this->s, $this->server, $this->port) === false) {
+        $this->s = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+        if (socket_connect($this->s, $this->server, intval($this->port)) === false) {
             throw new \Exception("socket_connect() failed: "
                 . socket_strerror(socket_last_error($this->s)));
         }
@@ -57,13 +58,22 @@ class SocketBot implements IBot
 
     protected function sendString(string $string)
     {
-        \socket_write($this->s, $string, mb_strlen($string));
+        $size = strlen($string);
+        $i = \socket_write($this->s, $string, $size);
+        $tmp = socket_last_error($this->s);
+        $ts = socket_strerror($tmp);
     }
 
     protected function receiveString(int $len, int $type) : string
     {
         $buffer = '';
-        socket_recv($this->s, $buffer, $len, $type);
+        $i = socket_recv($this->s, $buffer, $len, $type);
+        $tmp = socket_last_error($this->s);
+        $ts = socket_strerror($tmp);
+        if ($i === 0 || !$i)
+        {
+            return '';
+        }
         return $buffer;    
     }
 

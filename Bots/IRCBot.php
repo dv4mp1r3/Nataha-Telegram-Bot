@@ -41,6 +41,7 @@ abstract class IRCBot extends SocketBot{
         parent::execute();
         $this->login();
         $this->joinChannels();
+        $this->do();
     }
 
     protected function login()
@@ -53,7 +54,7 @@ abstract class IRCBot extends SocketBot{
     {
         foreach($this->channels as $channel)
         {
-            $this->sendString("JOIN #$channel");
+            $this->sendString("JOIN #$channel\n");
         }
     }
 
@@ -64,6 +65,7 @@ abstract class IRCBot extends SocketBot{
         {
             $out = $this->receiveString(2048, MSG_DONTWAIT);
             if (mb_strlen($out) > 0) {
+                echo "$out\n";
                 $buffer .= $out;
                 while (($pos = strpos($buffer, "\n")) !== false) {
                     $needToBreak = $this->processMessage(trim(substr($buffer, 0, $pos)));
