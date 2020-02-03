@@ -62,6 +62,11 @@ class SecurityExpert
         return preg_match("/сосур(.*)|сосурити|сусурька|сасурян|сосурян/i", $lowerRawText);
     }
 
+    public function isHaha(string $loweRawText) : bool
+    {
+        return preg_match("/ахах/i", $loweRawText);
+    }
+
 
 
 }
