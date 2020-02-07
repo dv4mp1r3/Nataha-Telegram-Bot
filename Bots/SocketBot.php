@@ -56,20 +56,40 @@ class SocketBot implements IBot
         }
     }
 
+    /**
+     * @param string $function
+     * @param int $returnValue
+     */
+    protected function debugPrintSocketError(string $function, $returnValue)
+    {
+        if (defined('IS_DEBUG') && IS_DEBUG)
+        {
+            $tmp = socket_last_error($this->s);
+            $ts = socket_strerror($tmp);
+            if($tmp === SOCKET_EAGAIN)
+            {
+                return;
+            }
+            echo "{$function}: {$ts} ($tmp)\n";
+            if ($returnValue)
+            {
+                echo "return value $returnValue\n";
+            }
+        }
+    }
+
     protected function sendString(string $string)
     {
         $size = strlen($string);
         $i = \socket_write($this->s, $string, $size);
-        $tmp = socket_last_error($this->s);
-        $ts = socket_strerror($tmp);
+        $this->debugPrintSocketError(__FUNCTION__, $i);
     }
 
     protected function receiveString(int $len, int $type) : string
     {
         $buffer = '';
         $i = socket_recv($this->s, $buffer, $len, $type);
-        $tmp = socket_last_error($this->s);
-        $ts = socket_strerror($tmp);
+        $this->debugPrintSocketError(__FUNCTION__, $i);
         if ($i === 0 || !$i)
         {
             return '';
