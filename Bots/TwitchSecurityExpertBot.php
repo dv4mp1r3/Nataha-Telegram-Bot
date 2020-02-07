@@ -31,7 +31,7 @@ class TwitchSecurityExpertBot extends IRCBot
     {
         if (strpos($message, 'PING'))
         {
-            $this->sendString("PONG\r\n");
+            $this->sendString("PONG :{$this->server}\r\n");
             return false;
         }
 
