@@ -29,7 +29,7 @@ class TwitchSecurityExpertBot extends IRCBot
 
     public function processMessage(string $message): bool
     {
-        if (strpos($message, 'PING'))
+        if (strpos($message, 'PING') !== false)
         {
             $this->sendString("PONG :{$this->server}\r\n");
             return false;
