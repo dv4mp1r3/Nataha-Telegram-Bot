@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Bots;
 
+use Commands\CommandListener;
+
 /**
  * Базовый бот для обработки входящей инфы от телеграма
  */
@@ -26,7 +28,7 @@ class TelegramBot extends AbstractBaseBot
      */
     protected $isCommandAlreadyExecuted = false;
 
-    public function __construct()
+    public function __construct(CommandListener $listener = null)
     {
         $keyMessage = 'message';
         if (!defined('IS_DEBUG') || !IS_DEBUG) {
@@ -49,6 +51,7 @@ class TelegramBot extends AbstractBaseBot
         }
 
         $this->chatId = $this->decodedInput[$keyMessage]['chat']['id'];
+        parent::__construct($listener);
     }
 
     /**
