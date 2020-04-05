@@ -4,8 +4,13 @@
 namespace Bots;
 
 
+use Bots\Events\TwitchBeforeSendEvent;
 use Misc\MarkovChains;
 use Misc\SecurityExpert;
+use Panda\Yandex\SpeechKitSDK\Cloud;
+use Panda\Yandex\SpeechKitSDK\Lang;
+use Panda\Yandex\SpeechKitSDK\Ru;
+use Panda\Yandex\SpeechKitSDK\Speech;
 
 class TwitchSecurityExpertBot extends IRCBot
 {
@@ -37,8 +42,14 @@ class TwitchSecurityExpertBot extends IRCBot
         $lowerMessage = mb_strtolower($message);
         if ($this->sExpert->isReply($lowerMessage) || $this->isReply($lowerMessage))
         {
-            $str = "PRIVMSG #".$this->channels[0].' :'.$this->m->generateText(10)."\r\n";
-            $this->sendString($str);
+            $genText = $this->m->generateText(10);
+            $str = "PRIVMSG #".$this->channels[0].' :'.$genText."\r\n";
+            /**
+             * @var TwitchBeforeSendEvent $beforeStartEvent
+             */
+            $beforeStartEvent = $this->beforeSendEvent;
+            $beforeStartEvent->setEventData($genText);
+            $this->sendString($str, true);
         }
         if($this->sExpert->isHaha($lowerMessage))
         {

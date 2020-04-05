@@ -4,9 +4,12 @@ declare(strict_types = 1);
 
 namespace Bots;
 
+use Bots\Events\IEvent;
+
 class SocketBot implements IBot
 {
 
+    const BEFORE_SEND_EVENT = 'beforeSend';
     /**
      * @var string
      */
@@ -21,6 +24,23 @@ class SocketBot implements IBot
      * @var resource
      */
     private $s;
+
+    /**
+     * @var IEvent
+     */
+    protected $beforeSendEvent;
+
+    public function setEvent(string $eventType, IEvent $event) : SocketBot
+    {
+        switch ($eventType)
+        {
+            case self::BEFORE_SEND_EVENT:
+                $this->beforeSendEvent = $event;
+            default:
+                return $this;
+        }
+        return $this;
+    }
 
     public function __construct(string $server, string $port)
     {
@@ -78,8 +98,12 @@ class SocketBot implements IBot
         }
     }
 
-    protected function sendString(string $string)
+    protected function sendString(string $string, bool $startEvents = false)
     {
+        if ($startEvents && $this->beforeSendEvent instanceof IEvent)
+        {
+            $this->beforeSendEvent->run();
+        }
         $size = strlen($string);
         $i = \socket_write($this->s, $string, $size);
         $this->debugPrintSocketError(__FUNCTION__, $i);

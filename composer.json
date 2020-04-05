@@ -7,8 +7,10 @@
             "email": "admin@mainframe.some"
         }
     ],
+    "minimum-stability": "dev",
     "require": {
-        "dg/twitter-php" : "*"
+        "dg/twitter-php" : "*",
+        "itpanda-llc/yandex-speechkit-php-sdk": "dev-master"
     },
     "autoload": {
         "psr-4": {

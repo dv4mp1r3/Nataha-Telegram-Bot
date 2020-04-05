@@ -4,4 +4,5 @@ data.json.txt
 config.php
 .idea
 /vendor
+/node_modules
 testData.php
