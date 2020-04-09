@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Bots\Events;
 
 use Panda\Yandex\SpeechKitSDK\Cloud;
+use Panda\Yandex\SpeechKitSDK\Emotion;
 use Panda\Yandex\SpeechKitSDK\Lang;
 use Panda\Yandex\SpeechKitSDK\Ru;
 use Panda\Yandex\SpeechKitSDK\Speech;
@@ -51,7 +52,8 @@ class TwitchBeforeSendEvent implements IEvent
     protected function saveMessageAsVoice(string $str)
     {
         $speech = new Speech($str);
-        $speech->setVoice(Ru::OKSANA)
+        $speech->setVoice(Ru::OMAZH)
+            ->setEmotion(Emotion::EVIL)
             ->setLang(Lang::RU);
         $media = $this->cloud->request($speech);
         file_put_contents('t.ogg', $media);
