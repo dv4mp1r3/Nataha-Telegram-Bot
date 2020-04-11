@@ -42,7 +42,13 @@ class TwitchSecurityExpertBot extends IRCBot
         $lowerMessage = mb_strtolower($message);
         if ($this->sExpert->isReply($lowerMessage) || $this->isReply($lowerMessage))
         {
-            $genText = $this->m->generateText(10);
+            while(true) {
+                $genText = $this->m->generateText(15);
+                $wordsCount = mb_substr_count($genText, " ");
+                if ($wordsCount >= 3) {
+                    break;
+                }
+            }
             $str = "PRIVMSG #".$this->channels[0].' :'.$genText."\r\n";
             /**
              * @var TwitchBeforeSendEvent $beforeStartEvent
