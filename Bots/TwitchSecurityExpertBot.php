@@ -45,7 +45,7 @@ class TwitchSecurityExpertBot extends IRCBot
             while(true) {
                 $genText = $this->m->generateText(15);
                 $wordsCount = mb_substr_count($genText, " ");
-                if ($wordsCount >= 3) {
+                if ($wordsCount >= 2) {
                     break;
                 }
             }
