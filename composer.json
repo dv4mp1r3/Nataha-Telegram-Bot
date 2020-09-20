@@ -10,7 +10,8 @@
     "minimum-stability": "dev",
     "require": {
         "dg/twitter-php" : "*",
-        "itpanda-llc/yandex-speechkit-php-sdk": "dev-master"
+        "itpanda-llc/yandex-speechkit-php-sdk": "dev-master",
+        "ext-curl": "*"
     },
     "autoload": {
         "psr-4": {

@@ -26,7 +26,6 @@ class TelegramSecurityExpertBot extends TelegramMarkovBot
         }
         $securityExpert = new SecurityExpert();
 
-
         if ($this->chatId != ID_CREATOR && $this->chatId != ID_CHAT) {
             $this->sendMessage($this->chatId, SecurityExpert::MESSAGE_GET_OFF);
             return;
