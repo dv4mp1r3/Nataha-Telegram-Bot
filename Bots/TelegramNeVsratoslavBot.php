@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Bots;
 
+use Misc\MemeTextFromPDO;
 use Misc\NeVsratoslav;
 use Misc\SecurityExpert;
 
@@ -13,9 +14,25 @@ class TelegramNeVsratoslavBot extends TelegramSecurityExpertBot
 
     private string $fontPath;
 
+    private string $mQuery;
+
+    private \PDO $pdo;
+
     public function setFontPath(string $fontPath): self
     {
         $this->fontPath = $fontPath;
+        return $this;
+    }
+
+    public function setMemeTextQuery(string $mQuery): self
+    {
+        $this->mQuery = $mQuery;
+        return $this;
+    }
+
+    public function setMemTextPdo(\PDO $pdo): self
+    {
+        $this->pdo = $pdo;
         return $this;
     }
 
@@ -49,8 +66,11 @@ class TelegramNeVsratoslavBot extends TelegramSecurityExpertBot
         if ($this->isImageReply($this->decodedInput) && $nvsrt->isReply($lowerRawText)) {
             $filePath = $this->getFilePath($this->decodedInput['message']['reply_to_message']['photo'][0]['file_id']);
             $image = $this->downloadFile($filePath);
-            //todo: переписать на использование генератора текста
-            $image = $nvsrt->addTextToImage($image, "TESTTEXT", $this->fontPath);
+            $image = $nvsrt->addTextToImage(
+                $image,
+                MemeTextFromPDO::getRandomString($this->pdo, $this->mQuery),
+                $this->fontPath
+            );
             try {
                 $this->sendPhoto($this->chatId, $image);
                 return;
