@@ -6,8 +6,8 @@ namespace ResourceParsers;
 
 class StockParser extends AbstractResourceParser
 {
-    public function parse() : string
+    public function parse() : array
     {
-        return 'todo';
+        return ['todo'];
     }
 }

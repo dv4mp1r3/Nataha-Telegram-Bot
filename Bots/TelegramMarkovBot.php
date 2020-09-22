@@ -10,7 +10,7 @@ use Misc\MarkovChains;
 
 class TelegramMarkovBot extends TelegramBot
 {
-    protected static $filterRegEx = [
+    protected static array $filterRegEx = [
         "urlFilter" => "@(https?://([-\w\.]+[-\w])+(:\d+)?(/([\w/_\.#-]*(\?\S+)?[^\.\s])?)?)@",
         "punctiationFilter" => "/(?<!\w)[.,!]/",
         "newlineFilter" => "/\r|\n/",
@@ -19,7 +19,7 @@ class TelegramMarkovBot extends TelegramBot
     /**
      * @var MarkovChains
      */
-    protected $markov;
+    protected MarkovChains $markov;
 
     public function __construct(CommandListener $listener, IReader $reader)
     {

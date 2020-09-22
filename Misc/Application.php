@@ -12,12 +12,12 @@ class Application
     /**
      * @var bool
      */
-    protected $isDebug = false;
+    protected bool $isDebug = false;
 
     /**
      * @var IBot
      */
-    protected $bot;
+    protected IBot $bot;
 
     public function __construct(IBot $bot, bool $isDebug = false)
     {
@@ -26,7 +26,7 @@ class Application
         set_error_handler([$this, 'errorHandler']);
     }
 
-    public function run()
+    public function run() : void
     {
         try {
             $this->bot->execute();

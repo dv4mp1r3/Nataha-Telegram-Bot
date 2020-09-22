@@ -6,12 +6,16 @@ namespace Bots;
 
 use Commands\CommandListener;
 
+/**
+ * Базовый класс для ботов
+ * @package Bots
+ */
 abstract class AbstractBaseBot implements IBot
 {
     /**
      * @var CommandListener
      */
-    protected $commandListener;
+    protected CommandListener $commandListener;
 
     public function __construct(CommandListener $listener = null)
     {

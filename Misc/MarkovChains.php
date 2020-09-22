@@ -9,16 +9,16 @@ class MarkovChains
     const ARRAY_KEY_CHAIN = 'chain';
 
     /**
-     * @var string
+     * @var string полный путь к файлу с цепью
      */
-    protected $filePath;
+    protected string $filePath;
 
     /**
-     * @var string
+     * @var array готовая цепь, декодированная из файла
      */
-    protected $chain;
+    protected array $chain;
 
-    protected $writeHumanReadable = false;
+    protected bool $writeHumanReadable = false;
 
     public function __construct(string $filePath)
     {
@@ -33,8 +33,7 @@ class MarkovChains
     /**
      * генерация/обновление цепи
      * @param string $message
-     * @param array $data
-     * @return array
+     * @return void
      */
     public function train(string $message): void
     {
@@ -106,7 +105,7 @@ class MarkovChains
     /**
      *
      * @param array $block
-     * @return boolean
+     * @return boolean|string
      */
     protected function weighAndSelect(array $block)
     {
@@ -126,6 +125,12 @@ class MarkovChains
         return $tmp[$rand];
     }
 
+
+    /**
+     * Сохранение цепи в файл
+     * @return bool результат сохранения
+     * @throws \Exception
+     */
     public function saveChain(): bool
     {
         $putData = json_encode($this->chain);

@@ -21,6 +21,12 @@ namespace Misc;
 class MemeTextFromPDO
 {
 
+    /**
+     * @param \PDO $pdo инстанс PDO с переданным DSN
+     * @param string $query запрос для получения текста из таблицы, который будет выполнен $pdo
+     * @return string результат выполнения запроса $query для инстанса $pdo
+     * @throws \Exception
+     */
     public static function getRandomString(\PDO $pdo, string $query): string
     {
         $res = $pdo->query($query);

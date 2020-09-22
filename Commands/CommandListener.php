@@ -7,17 +7,17 @@ namespace Commands;
 
 class CommandListener
 {
-    protected $registeredCommands = [];
+    protected array $registeredCommands = [];
 
     /**
      * @var ICommand
      */
-    protected $foundCommand;
+    protected ICommand $foundCommand;
 
     /**
      * @var array
      */
-    protected $commandArgs;
+    protected array $commandArgs;
 
     public function addCommand(string $commandText, ICommand $command): CommandListener
     {

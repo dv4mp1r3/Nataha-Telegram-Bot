@@ -15,17 +15,17 @@ class TwitchBeforeSendEvent implements IEvent
     /**
      * @var Cloud
      */
-    protected $cloud;
+    protected Cloud $cloud;
 
     /**
      * @var int
      */
-    protected $nodePid;
+    protected int $nodePid;
 
     /**
      * @var string
      */
-    protected $eventData;
+    protected string $eventData;
 
     public function __construct(string $pidFile, string $token, string $folder)
     {

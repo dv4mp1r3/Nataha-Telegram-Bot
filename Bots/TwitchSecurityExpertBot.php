@@ -7,22 +7,18 @@ namespace Bots;
 use Bots\Events\TwitchBeforeSendEvent;
 use Misc\MarkovChains;
 use Misc\SecurityExpert;
-use Panda\Yandex\SpeechKitSDK\Cloud;
-use Panda\Yandex\SpeechKitSDK\Lang;
-use Panda\Yandex\SpeechKitSDK\Ru;
-use Panda\Yandex\SpeechKitSDK\Speech;
 
 class TwitchSecurityExpertBot extends IRCBot
 {
     /**
      * @var SecurityExpert
      */
-    protected $sExpert;
+    protected SecurityExpert $sExpert;
 
     /**
      * @var MarkovChains
      */
-    protected $m;
+    protected MarkovChains $m;
 
     public function __construct(string $server, string $port, string $username, string $password, array $channels, string $markovDatabaseFile)
     {
@@ -32,6 +28,12 @@ class TwitchSecurityExpertBot extends IRCBot
         parent::__construct($server, $port, $username, $password, $channels);
     }
 
+    /**
+     * Обработка нового сообщения
+     * @param string $message
+     * @return bool
+     * @throws \Exception
+     */
     public function processMessage(string $message): bool
     {
         if (strpos($message, 'PING') !== false)
@@ -66,6 +68,11 @@ class TwitchSecurityExpertBot extends IRCBot
         return false;
     }
 
+    /**
+     * Поиск в тексте сообщения упоминания бота
+     * @param $lowerMessage
+     * @return bool
+     */
     protected function isReply($lowerMessage) : bool
     {
         return preg_match('/:@securityexpert/i', $lowerMessage);

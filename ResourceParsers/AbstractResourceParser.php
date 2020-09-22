@@ -6,7 +6,7 @@ namespace ResourceParsers;
 
 abstract class AbstractResourceParser implements IResourceParser
 {
-    protected $url;
+    protected string $url;
 
     public function __construct(string $url)
     {

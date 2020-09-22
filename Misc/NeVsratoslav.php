@@ -21,15 +21,15 @@ class NeVsratoslav extends SecurityExpert
     private int $textY;
 
     /**
-     * @param string $image image full path
-     * @param string $text
-     * @param string $fontPath
-     * @return string
+     * @param string $imageBytes прочитанный в строку файл
+     * @param string $text текст который нужно добавить
+     * @param string $fontPath полный путь к шрифтам
+     * @return string обработанное изображение, готовое к сохранению в файл или передаче
      * @throws \Exception
      */
-    public function addTextToImage(string $image, string $text, string $fontPath) : string
+    public function addTextToImage(string $imageBytes, string $text, string $fontPath) : string
     {
-        $this->loadImage($image);
+        $this->loadImage($imageBytes);
         $this->calculateTextPosition($text, $fontPath);
         $black = imagecolorallocate($this->image, 0, 0, 0);
         $white = imagecolorallocate($this->image, 255, 255, 255);
@@ -45,7 +45,7 @@ class NeVsratoslav extends SecurityExpert
         return $imageBytes;
     }
 
-    public function closeImage()
+    public function closeImage() : void
     {
         if (is_resource($this->image)) {
             imagedestroy($this->image);
@@ -57,7 +57,11 @@ class NeVsratoslav extends SecurityExpert
         $this->closeImage();
     }
 
-    private function loadImage($imageBytes): void
+    /**
+     * @param string $imageBytes прочитанный в строку файл
+     * @throws \Exception
+     */
+    private function loadImage(string $imageBytes): void
     {
         $image = imagecreatefromstring($imageBytes);
         if (is_resource($image)) {

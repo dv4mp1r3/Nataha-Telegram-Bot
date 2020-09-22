@@ -4,24 +4,31 @@ declare(strict_types = 1);
 
 namespace Bots;
 
+/**
+ * Базовый класс для реализации irc-ботов
+ * Необходима поддержка сокетов для работы
+ * Для реализации нужно описать метод processMessage
+ * @see TwitchSecurityExpertBot
+ * @package Bots
+ */
 abstract class IRCBot extends SocketBot{
 
     /**
      * @var string
      */
-    protected $username;
+    protected string $username;
 
     /**
      * @var string
      */
-    protected $password;
+    protected string $password;
 
     /**
      * @var array
      */
-    protected $channels;
+    protected array $channels;
 
-    protected $timeoutMicro = 10000;
+    protected int $timeoutMicro = 10000;
 
     public function __construct(string $server, string $port, string $username, string $password, array $channels)
     {

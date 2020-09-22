@@ -13,10 +13,9 @@ class HashIdCommand implements ICommand
     /**
      * @inheritDoc
      */
-    public function run(array $args, $decodedInput = []) : string
+    public function run(array $args, $decodedInput = []): string
     {
-        if (!is_array($args))
-        {
+        if (!is_array($args)) {
             throw new \InvalidArgumentException('$payload is not array');
         }
 
@@ -25,34 +24,27 @@ class HashIdCommand implements ICommand
         $messageText = '';
         $fileContent = file_get_contents(__DIR__ . '/../hash_prototypes.json');
 
-        if (!is_string($fileContent))
-        {
+        if (!is_string($fileContent)) {
             throw new \InvalidArgumentException('$fileContent is not string');
         }
 
         $hashGroupsData = json_decode($fileContent, true);
-        if (json_last_error() > 0)
-        {
-            throw new \BadFunctionCallException("json_decode error: ".json_last_error_msg());
+        if (json_last_error() > 0) {
+            throw new \BadFunctionCallException("json_decode error: " . json_last_error_msg());
         }
 
-        foreach($hashGroupsData as &$group)
-        {
+        foreach ($hashGroupsData as &$group) {
             $regex = "/{$group['regex']}/";
-            if (preg_match($regex, $hash))
-            {
+            if (preg_match($regex, $hash)) {
                 $messageText .= $this->addHashesNames($group['modes']);
                 $count++;
             }
         }
 
-        if ($count > 0)
-        {
+        if ($count > 0) {
             return $messageText;
-        }
-        else
-        {
-            return self::MESSAGE_HASHID_NOTHING."\"$hash\"";
+        } else {
+            return self::MESSAGE_HASHID_NOTHING . "\"$hash\"";
         }
     }
 
@@ -60,11 +52,10 @@ class HashIdCommand implements ICommand
      * @param array $data
      * @return string
      */
-    protected function addHashesNames(array $data) : string
+    protected function addHashesNames(array $data): string
     {
         $result = '';
-        foreach ($data as &$hash)
-        {
+        foreach ($data as &$hash) {
             $result .= "{$hash['name']}\n";
         }
         return $result;

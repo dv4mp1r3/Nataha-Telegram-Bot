@@ -13,12 +13,12 @@ class SocketBot implements IBot
     /**
      * @var string
      */
-    protected $server;
+    protected string $server;
 
     /**
      * @var string
      */
-    protected $port;
+    protected string $port;
 
     /**
      * @var resource
@@ -28,7 +28,7 @@ class SocketBot implements IBot
     /**
      * @var IEvent
      */
-    protected $beforeSendEvent;
+    protected IEvent $beforeSendEvent;
 
     public function setEvent(string $eventType, IEvent $event) : SocketBot
     {
@@ -59,7 +59,10 @@ class SocketBot implements IBot
         $this->closeConnection();
     }
 
-    protected function openConnection()
+    /**
+     * @throws \Exception
+     */
+    protected function openConnection() : void
     {
         $this->s = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
         if (socket_connect($this->s, $this->server, intval($this->port)) === false) {
@@ -80,7 +83,7 @@ class SocketBot implements IBot
      * @param string $function
      * @param int $returnValue
      */
-    protected function debugPrintSocketError(string $function, $returnValue)
+    protected function debugPrintSocketError(string $function, int $returnValue)
     {
         if (defined('IS_DEBUG') && IS_DEBUG)
         {

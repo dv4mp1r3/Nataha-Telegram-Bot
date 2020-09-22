@@ -9,6 +9,7 @@ use Misc\Input\IReader;
 
 /**
  * Базовый бот для обработки входящей инфы от телеграма
+ * todo: вынести отправку пакетов через curl в отдельный класс
  */
 class TelegramBot extends AbstractBaseBot
 {
@@ -20,18 +21,18 @@ class TelegramBot extends AbstractBaseBot
 
     const API_URL = 'https://api.telegram.org';
 
-    protected $decodedInput = '';
+    protected array $decodedInput = [];
 
-    protected $rawText = '';
+    protected string $rawText = '';
 
-    protected $chatId;
+    protected int $chatId;
 
     /**
      * Устанавливается в true после первой выполненной команды
      * @see execute
      * @var bool
      */
-    protected $isCommandAlreadyExecuted = false;
+    protected bool $isCommandAlreadyExecuted = false;
 
     public function __construct(CommandListener $listener = null, IReader $reader)
     {
