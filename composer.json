@@ -1,24 +1,26 @@
 {
-    "name": "empty name",
-    "description": "empty description",
-    "authors": [
-        {
-            "name": "dv4mp1r3",
-            "email": "admin@mainframe.some"
-        }
-    ],
-    "minimum-stability": "dev",
-    "require": {
-        "dg/twitter-php" : "*",
-        "itpanda-llc/yandex-speechkit-php-sdk": "dev-master",
-        "ext-curl": "*"
-    },
-    "autoload": {
-        "psr-4": {
-            "Bots\\": "Bots/",
-            "Commands\\": "Commands/",
-            "ResourceParsers\\": "ResourceParsers/",
-            "Misc\\": "Misc"
-        }
+  "name": "empty name",
+  "description": "empty description",
+  "authors": [
+    {
+      "name": "dv4mp1r3",
+      "email": "admin@mainframe.some"
     }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "dg/twitter-php": "*",
+    "itpanda-llc/yandex-speechkit-php-sdk": "dev-master",
+    "ext-curl": "*",
+    "ext-json": "*",
+    "ext-sockets": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Bots\\": "Bots/",
+      "Commands\\": "Commands/",
+      "ResourceParsers\\": "ResourceParsers/",
+      "Misc\\": "Misc"
+    }
+  }
 }
