@@ -20,6 +20,16 @@ class TwitchSecurityExpertBot extends IRCBot
      */
     protected MarkovChains $m;
 
+    /**
+     * TwitchSecurityExpertBot constructor.
+     * @param string $server
+     * @param string $port
+     * @param string $username
+     * @param string $password
+     * @param array $channels
+     * @param string $markovDatabaseFile
+     * @throws \Exception
+     */
     public function __construct(string $server, string $port, string $username, string $password, array $channels, string $markovDatabaseFile)
     {
         $this->sExpert = new SecurityExpert();

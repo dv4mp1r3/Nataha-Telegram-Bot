@@ -18,29 +18,49 @@ class TelegramNeVsratoslavBot extends TelegramSecurityExpertBot
 
     private \PDO $pdo;
 
+    /**
+     * @param string $fontPath
+     * @return $this
+     */
     public function setFontPath(string $fontPath): self
     {
         $this->fontPath = $fontPath;
         return $this;
     }
 
+    /**
+     * @param string $mQuery
+     * @return $this
+     */
     public function setMemeTextQuery(string $mQuery): self
     {
         $this->mQuery = $mQuery;
         return $this;
     }
 
+    /**
+     * @param \PDO $pdo
+     * @return $this
+     */
     public function setMemTextPdo(\PDO $pdo): self
     {
         $this->pdo = $pdo;
         return $this;
     }
 
+    /**
+     * @param array $message
+     * @return bool
+     */
     public function isImageReply(array $message): bool
     {
         return $this->isReply($message, '') && $this->replMessageIsImage($message);
     }
 
+    /**
+     * @param array $message
+     * @return bool
+     */
     protected function replMessageIsImage(array $message): bool
     {
         return array_key_exists('message', $message) &&

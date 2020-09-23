@@ -17,11 +17,18 @@ abstract class AbstractBaseBot implements IBot
      */
     protected CommandListener $commandListener;
 
+    /**
+     * AbstractBaseBot constructor.
+     * @param CommandListener|null $listener
+     */
     public function __construct(CommandListener $listener = null)
     {
         $this->setCommandListener($listener);
     }
 
+    /**
+     * @param CommandListener $listener
+     */
     public function setCommandListener(CommandListener $listener) : void
     {
         $this->commandListener = $listener;

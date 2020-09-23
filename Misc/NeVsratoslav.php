@@ -71,6 +71,12 @@ class NeVsratoslav extends SecurityExpert
         throw new \Exception("Can't load image from string");
     }
 
+    /**
+     * Расчет максимально возможного прямоугольника для пропорционального нанесения текста на изображение
+     * и высоты шрифта
+     * @param string $text
+     * @param string $fontPath
+     */
     private function calculateTextPosition(string $text, string $fontPath): void
     {
         $sourceImageWidth = imagesx($this->image) * 0.75;

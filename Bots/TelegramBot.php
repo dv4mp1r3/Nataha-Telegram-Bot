@@ -34,6 +34,12 @@ class TelegramBot extends AbstractBaseBot
      */
     protected bool $isCommandAlreadyExecuted = false;
 
+    /**
+     * TelegramBot constructor.
+     * @param CommandListener|null $listener
+     * @param IReader $reader
+     * @throws \Exception
+     */
     public function __construct(CommandListener $listener = null, IReader $reader)
     {
         $keyMessage = 'message';
@@ -123,6 +129,11 @@ class TelegramBot extends AbstractBaseBot
         echo json_encode($reply);
     }
 
+    /**
+     * @param string $stringOutput
+     * @return array
+     * @throws \Exception
+     */
     protected function checkTelegramOutput($stringOutput): array
     {
         $data = json_decode($stringOutput, true);
@@ -155,6 +166,11 @@ class TelegramBot extends AbstractBaseBot
         return $ch;
     }
 
+    /**
+     * @param string $id
+     * @return string
+     * @throws \Exception
+     */
     protected function getFilePath(string $id): string
     {
         $url = self::buildFunctionUrl('getFile', ['file_id' => $id]);
@@ -168,6 +184,12 @@ class TelegramBot extends AbstractBaseBot
         return $fileData['result']['file_path'];
     }
 
+    /**
+     * @param int $chatId
+     * @param string $fileContent
+     * @return array
+     * @throws \Exception
+     */
     protected function sendPhoto(int $chatId, string $fileContent): array
     {
         $boundary = uniqid();
@@ -201,7 +223,12 @@ class TelegramBot extends AbstractBaseBot
         return $fileData;
     }
 
-    protected function downloadFile($filePath): string
+    /**
+     * @param $filePath
+     * @return string
+     * @throws \Exception
+     */
+    protected function downloadFile(string $filePath): string
     {
         if (!defined('TELEGRAM_BOT_TOKEN')) {
             throw new \Exception('constant TELEGRAM_BOT_TOKEN is not defined');

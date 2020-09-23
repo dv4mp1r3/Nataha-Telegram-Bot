@@ -20,11 +20,18 @@ class MarkovChains
 
     protected bool $writeHumanReadable = false;
 
+    /**
+     * MarkovChains constructor.
+     * @param string $filePath
+     */
     public function __construct(string $filePath)
     {
         $this->filePath = $filePath;
     }
 
+    /**
+     * @param bool $use
+     */
     public function useHumanReadableFormat(bool $use)
     {
         $this->writeHumanReadable = $use;
