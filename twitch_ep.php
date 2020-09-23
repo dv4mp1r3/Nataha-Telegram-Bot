@@ -1,12 +1,16 @@
 <?php
 
+if (PHP_VERSION_ID < 70200) {
+    die("PHP >= 7.0 required" . PHP_EOL);
+}
+
 declare(strict_types=1);
 
 require_once './config.php';
 require_once './vendor/autoload.php';
 
-global  $twitchData;
-global  $yaCloudData;
+global $twitchData;
+global $yaCloudData;
 
 (new \Misc\Application(
     (new \Bots\TwitchSecurityExpertBot(
