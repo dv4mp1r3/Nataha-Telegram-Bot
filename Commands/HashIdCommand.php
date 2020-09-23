@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Commands;
 
 
@@ -13,7 +11,7 @@ class HashIdCommand implements ICommand
     /**
      * @inheritDoc
      */
-    public function run(array $args, array $decodedInput = []): string
+    public function run($args, $decodedInput = [])
     {
         if (!is_array($args)) {
             throw new \InvalidArgumentException('$payload is not array');
@@ -52,7 +50,7 @@ class HashIdCommand implements ICommand
      * @param array $data
      * @return string
      */
-    protected function addHashesNames(array $data): string
+    protected function addHashesNames($data)
     {
         $result = '';
         foreach ($data as &$hash) {

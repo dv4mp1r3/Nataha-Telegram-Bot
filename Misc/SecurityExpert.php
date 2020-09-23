@@ -9,7 +9,7 @@ class SecurityExpert
     const MESSAGE_GET_OFF = 'Я НЕ БУДУ ТУТ РАБОТАТЬ!';
     const MESSAGE_LOW_DATA = 'Мне нечего сказать. Мало данных';
 
-    protected static array $regExpData = [
+    protected static $regExpData = [
         "/ресеп(.*)сука|ресеп(.*)тупая|ресеп(.*)несешь/i" => "CAADAgADCQADaJpdDDa9pygUaeHvAg",
         "/ахах/i" => "CAADAgADnQADaJpdDK2h3LaVb7oGAg",
         //"/php|пых/i" => "CAADAgADEwADmqwRGPffQIaMmNCbAg",
@@ -18,13 +18,13 @@ class SecurityExpert
     /**
      * @var string
      */
-    protected string $commonMessageText = '';
+    protected $commonMessageText = '';
 
     /**
      * @param string $lowerRawText
      * @return bool
      */
-    public function isStickerTemplateMessage(string $lowerRawText) : bool
+    public function isStickerTemplateMessage($lowerRawText)
     {
         foreach (self::$regExpData as $regExp => $value) {
             if (preg_match($regExp, $lowerRawText)) {
@@ -39,7 +39,7 @@ class SecurityExpert
      * @param string $lowerRawText
      * @return bool
      */
-    public function isBlogTemplateMessage(string $lowerRawText) : bool
+    public function isBlogTemplateMessage($lowerRawText)
     {
         if (preg_match("/сосурити(.*)блог/i", $lowerRawText)) {
             $this->commonMessageText = "НЕТУ";
@@ -52,7 +52,7 @@ class SecurityExpert
      *
      * @return string
      */
-    public function getMessageText() : string
+    public function getMessageText()
     {
         return $this->commonMessageText;
     }
@@ -62,7 +62,7 @@ class SecurityExpert
      * @param string $lowerRawText
      * @return bool
      */
-    public function isReply(string $lowerRawText) : bool
+    public function isReply($lowerRawText)
     {
         return preg_match("/сосур(.*)|сосурити|сусурька|сасурян|сосурян/i", $lowerRawText);
     }
@@ -72,7 +72,7 @@ class SecurityExpert
      * @param string $loweRawText
      * @return bool
      */
-    public function isHaha(string $loweRawText) : bool
+    public function isHaha($loweRawText)
     {
         return preg_match("/ахах/i", $loweRawText);
     }

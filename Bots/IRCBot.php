@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types = 1);
-
 namespace Bots;
 
 /**
@@ -16,19 +14,19 @@ abstract class IRCBot extends SocketBot{
     /**
      * @var string
      */
-    protected string $username;
+    protected $username;
 
     /**
      * @var string
      */
-    protected string $password;
+    protected $password;
 
     /**
      * @var array
      */
-    protected array $channels;
+    protected $channels;
 
-    protected int $timeoutMicro = 10000;
+    protected $timeoutMicro = 10000;
 
     /**
      * IRCBot constructor.
@@ -38,7 +36,7 @@ abstract class IRCBot extends SocketBot{
      * @param string $password
      * @param array $channels
      */
-    public function __construct(string $server, string $port, string $username, string $password, array $channels)
+    public function __construct($server, $port, $username, $password, $channels)
     {
         parent::__construct($server, $port);
         $this->username = $username;
@@ -49,17 +47,17 @@ abstract class IRCBot extends SocketBot{
     /**
      * @param int $microSeconds
      */
-    public function setIterTimeout(int $microSeconds)
+    public function setIterTimeout($microSeconds)
     {
         $this->timeoutMicro = $microSeconds;
     }
 
-    public function execute() : void
+    public function execute()
     {
         parent::execute();
         $this->login();
         $this->joinChannels();
-        $this->do();
+        $this->_do();
     }
 
     protected function login()
@@ -76,7 +74,7 @@ abstract class IRCBot extends SocketBot{
         }
     }
 
-    protected function do() : void
+    protected function _do()
     {
         $buffer	= '';
         while(true)
@@ -102,6 +100,6 @@ abstract class IRCBot extends SocketBot{
      * @param string $message
      * @return bool
      */
-    public abstract function processMessage(string $message) : bool;
+    public abstract function processMessage($message);
     
 }

@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Bots;
 
 use Misc\MemeTextFromPDO;
@@ -12,17 +10,17 @@ class TelegramNeVsratoslavBot extends TelegramSecurityExpertBot
 {
     const ERROR_SEND_PHOTO = 'Не удалось загрузить фото';
 
-    private string $fontPath;
+    private $fontPath;
 
-    private string $mQuery;
+    private $mQuery;
 
-    private \PDO $pdo;
+    private $pdo;
 
     /**
      * @param string $fontPath
      * @return $this
      */
-    public function setFontPath(string $fontPath): self
+    public function setFontPath($fontPath)
     {
         $this->fontPath = $fontPath;
         return $this;
@@ -32,7 +30,7 @@ class TelegramNeVsratoslavBot extends TelegramSecurityExpertBot
      * @param string $mQuery
      * @return $this
      */
-    public function setMemeTextQuery(string $mQuery): self
+    public function setMemeTextQuery($mQuery)
     {
         $this->mQuery = $mQuery;
         return $this;
@@ -42,7 +40,7 @@ class TelegramNeVsratoslavBot extends TelegramSecurityExpertBot
      * @param \PDO $pdo
      * @return $this
      */
-    public function setMemTextPdo(\PDO $pdo): self
+    public function setMemTextPdo($pdo)
     {
         $this->pdo = $pdo;
         return $this;
@@ -52,7 +50,7 @@ class TelegramNeVsratoslavBot extends TelegramSecurityExpertBot
      * @param array $message
      * @return bool
      */
-    public function isImageReply(array $message): bool
+    public function isImageReply($message)
     {
         return $this->isReply($message, '') && $this->replMessageIsImage($message);
     }
@@ -61,7 +59,7 @@ class TelegramNeVsratoslavBot extends TelegramSecurityExpertBot
      * @param array $message
      * @return bool
      */
-    protected function replMessageIsImage(array $message): bool
+    protected function replMessageIsImage($message)
     {
         return array_key_exists('message', $message) &&
             array_key_exists('reply_to_message', $message['message']) &&
@@ -70,7 +68,7 @@ class TelegramNeVsratoslavBot extends TelegramSecurityExpertBot
             count($message['message']['reply_to_message']['photo']) > 0;
     }
 
-    public function execute(): void
+    public function execute()
     {
         if ($this->isCommandAlreadyExecuted) {
             return;

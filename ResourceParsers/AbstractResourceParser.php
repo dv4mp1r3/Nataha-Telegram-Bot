@@ -1,17 +1,15 @@
 <?php
 
-declare(strict_types=1);
-
 namespace ResourceParsers;
 
 abstract class AbstractResourceParser implements IResourceParser
 {
-    protected string $url;
+    protected $url;
 
-    public function __construct(string $url)
+    public function __construct($url)
     {
         $this->url = $url;
     }
 
-    public abstract function parse() : array;
+    public abstract function parse();
 }

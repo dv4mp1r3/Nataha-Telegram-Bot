@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Bots;
 
 use Commands\CommandListener;
@@ -10,7 +8,7 @@ use Misc\MarkovChains;
 
 class TelegramMarkovBot extends TelegramBot
 {
-    protected static array $filterRegEx = [
+    protected static $filterRegEx = [
         "urlFilter" => "@(https?://([-\w\.]+[-\w])+(:\d+)?(/([\w/_\.#-]*(\?\S+)?[^\.\s])?)?)@",
         "punctiationFilter" => "/(?<!\w)[.,!]/",
         "newlineFilter" => "/\r|\n/",
@@ -19,7 +17,7 @@ class TelegramMarkovBot extends TelegramBot
     /**
      * @var MarkovChains
      */
-    protected MarkovChains $markov;
+    protected $markov;
 
     /**
      * TelegramMarkovBot constructor.
@@ -27,13 +25,13 @@ class TelegramMarkovBot extends TelegramBot
      * @param IReader $reader
      * @throws \Exception
      */
-    public function __construct(CommandListener $listener, IReader $reader)
+    public function __construct($listener, $reader)
     {
         parent::__construct($listener, $reader);
         $this->markov = new MarkovChains(CONFIG_PATH);
     }
 
-    public function execute(): void
+    public function execute()
     {
         parent::execute();
         if (!$this->isCommandAlreadyExecuted) {

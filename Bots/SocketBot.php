@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types = 1);
-
 namespace Bots;
 
 use Bots\Events\IEvent;
@@ -13,12 +11,12 @@ class SocketBot implements IBot
     /**
      * @var string
      */
-    protected string $server;
+    protected $server;
 
     /**
      * @var string
      */
-    protected string $port;
+    protected $port;
 
     /**
      * @var resource
@@ -28,14 +26,14 @@ class SocketBot implements IBot
     /**
      * @var IEvent
      */
-    protected IEvent $beforeSendEvent;
+    protected $beforeSendEvent;
 
     /**
      * @param string $eventType
      * @param IEvent $event
      * @return SocketBot
      */
-    public function setEvent(string $eventType, IEvent $event) : SocketBot
+    public function setEvent($eventType, $event)
     {
         switch ($eventType)
         {
@@ -52,13 +50,13 @@ class SocketBot implements IBot
      * @param string $server
      * @param string $port
      */
-    public function __construct(string $server, string $port)
+    public function __construct($server, $port)
     {
         $this->server = $server;
         $this->port = $port;
     }
 
-    public function execute() : void
+    public function execute()
     {
         $this->openConnection();
         
@@ -72,7 +70,7 @@ class SocketBot implements IBot
     /**
      * @throws \Exception
      */
-    protected function openConnection() : void
+    protected function openConnection()
     {
         $this->s = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
         if (socket_connect($this->s, $this->server, intval($this->port)) === false) {
@@ -93,7 +91,7 @@ class SocketBot implements IBot
      * @param string $function
      * @param int $returnValue
      */
-    protected function debugPrintSocketError(string $function, int $returnValue)
+    protected function debugPrintSocketError($function, $returnValue)
     {
         if (defined('IS_DEBUG') && IS_DEBUG)
         {
@@ -115,7 +113,7 @@ class SocketBot implements IBot
      * @param string $string
      * @param bool $startEvents
      */
-    protected function sendString(string $string, bool $startEvents = false)
+    protected function sendString($string, $startEvents = false)
     {
         if ($startEvents && $this->beforeSendEvent instanceof IEvent)
         {
@@ -131,7 +129,7 @@ class SocketBot implements IBot
      * @param int $type
      * @return string
      */
-    protected function receiveString(int $len, int $type) : string
+    protected function receiveString($len, $type)
     {
         $buffer = '';
         $i = socket_recv($this->s, $buffer, $len, $type);
@@ -143,12 +141,12 @@ class SocketBot implements IBot
         return $buffer;    
     }
 
-    protected function getConnectionLastErrorCode() : int
+    protected function getConnectionLastErrorCode()
     {
         return socket_last_error($this->s);
     }
 
-    protected function getConnectionLastError() : string
+    protected function getConnectionLastError()
     {
         return socket_strerror($this->getConnectionLastErrorCode());
     }

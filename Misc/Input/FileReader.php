@@ -1,18 +1,17 @@
 <?php
-declare(strict_types=1);
 
 namespace Misc\Input;
 
 class FileReader implements IReader
 {
-    protected string $filePath;
+    protected $filePath;
 
-    public function __construct(string $filePath)
+    public function __construct($filePath)
     {
         $this->filePath = $filePath;
     }
 
-    public function readAll(): string
+    public function readAll()
     {
         if (!file_exists($this->filePath)) {
             throw new \Exception("File {$this->filePath} doesn't exists");

@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Bots;
 
 use Commands\CommandListener;
@@ -21,18 +19,18 @@ class TelegramBot extends AbstractBaseBot
 
     const API_URL = 'https://api.telegram.org';
 
-    protected array $decodedInput = [];
+    protected $decodedInput = [];
 
-    protected string $rawText = '';
+    protected $rawText = '';
 
-    protected int $chatId;
+    protected $chatId;
 
     /**
      * Устанавливается в true после первой выполненной команды
      * @see execute
      * @var bool
      */
-    protected bool $isCommandAlreadyExecuted = false;
+    protected $isCommandAlreadyExecuted = false;
 
     /**
      * TelegramBot constructor.
@@ -40,7 +38,7 @@ class TelegramBot extends AbstractBaseBot
      * @param IReader $reader
      * @throws \Exception
      */
-    public function __construct(CommandListener $listener = null, IReader $reader)
+    public function __construct($listener = null, $reader)
     {
         $keyMessage = 'message';
         $this->decodedInput = json_decode($reader->readAll(), true);
@@ -57,7 +55,7 @@ class TelegramBot extends AbstractBaseBot
         parent::__construct($listener);
     }
 
-    protected function parseRawText($message): string
+    protected function parseRawText($message)
     {
         $keys = ['text', 'caption'];
         foreach ($keys as $key) {
@@ -70,10 +68,10 @@ class TelegramBot extends AbstractBaseBot
 
     /**
      * Попытка обработки зарегистрированных команд
-     * @return mixed
+     * @return void
      * @see registerCommand
      */
-    public function execute(): void
+    public function execute()
     {
         try {
             if ($this->commandListener->isCommand($this->rawText)) {
@@ -93,7 +91,7 @@ class TelegramBot extends AbstractBaseBot
      * @param \Exception|null $ex
      * @return string
      */
-    protected function buildErrorReport(\Exception $ex = null): string
+    protected function buildErrorReport($ex = null)
     {
         $tgMessage = json_encode($this->decodedInput);
         $stackTrace = '';
@@ -111,7 +109,7 @@ class TelegramBot extends AbstractBaseBot
      * @param string $method
      * @throws \InvalidArgumentException
      */
-    protected function sendMessage(int $chatId, string $text, string $method = 'sendMessage')
+    protected function sendMessage($chatId, $text, $method = 'sendMessage')
     {
         header("Content-Type: application/json");
         $reply['method'] = $method;
@@ -134,7 +132,7 @@ class TelegramBot extends AbstractBaseBot
      * @return array
      * @throws \Exception
      */
-    protected function checkTelegramOutput($stringOutput): array
+    protected function checkTelegramOutput($stringOutput)
     {
         $data = json_decode($stringOutput, true);
         if (json_last_error() > 0) {
@@ -151,7 +149,7 @@ class TelegramBot extends AbstractBaseBot
      * @return false|resource
      * @throws \Exception
      */
-    protected function buildCurlGetTemplate(string $url)
+    protected function buildCurlGetTemplate($url)
     {
         $ch = curl_init();
         if ($ch === false) {
@@ -171,7 +169,7 @@ class TelegramBot extends AbstractBaseBot
      * @return string
      * @throws \Exception
      */
-    protected function getFilePath(string $id): string
+    protected function getFilePath($id)
     {
         $url = self::buildFunctionUrl('getFile', ['file_id' => $id]);
         $ch = $this->buildCurlGetTemplate($url);
@@ -190,7 +188,7 @@ class TelegramBot extends AbstractBaseBot
      * @return array
      * @throws \Exception
      */
-    protected function sendPhoto(int $chatId, string $fileContent): array
+    protected function sendPhoto($chatId, $fileContent)
     {
         $boundary = uniqid();
         $eol = "\r\n";
@@ -228,7 +226,7 @@ class TelegramBot extends AbstractBaseBot
      * @return string
      * @throws \Exception
      */
-    protected function downloadFile(string $filePath): string
+    protected function downloadFile($filePath)
     {
         if (!defined('TELEGRAM_BOT_TOKEN')) {
             throw new \Exception('constant TELEGRAM_BOT_TOKEN is not defined');
@@ -251,7 +249,7 @@ class TelegramBot extends AbstractBaseBot
      * @return string
      * @throws \Exception
      */
-    protected static function buildFunctionUrl(string $function, array $params = []): string
+    protected static function buildFunctionUrl($function, $params = [])
     {
         if (!defined('TELEGRAM_BOT_TOKEN')) {
             throw new \Exception('constant TELEGRAM_BOT_TOKEN is not defined');
@@ -270,7 +268,7 @@ class TelegramBot extends AbstractBaseBot
      * @param string $ident
      * @return boolean
      */
-    public function isReply(array $message, string $ident = IDENT): bool
+    public function isReply($message, $ident = IDENT)
     {
         $keyReplyTo = 'reply_to_message';
         $keyMessage = 'message';

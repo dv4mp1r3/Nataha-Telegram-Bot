@@ -1,13 +1,11 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Misc\Input;
 
 class PhpInputReader implements IReader
 {
 
-    public function readAll(): string
+    public function readAll()
     {
         $file = "php://input";
         $content = file_get_contents($file);

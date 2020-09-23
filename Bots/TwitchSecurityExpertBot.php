@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Bots;
-
 
 use Bots\Events\TwitchBeforeSendEvent;
 use Misc\MarkovChains;
@@ -13,12 +11,12 @@ class TwitchSecurityExpertBot extends IRCBot
     /**
      * @var SecurityExpert
      */
-    protected SecurityExpert $sExpert;
+    protected $sExpert;
 
     /**
      * @var MarkovChains
      */
-    protected MarkovChains $m;
+    protected $m;
 
     /**
      * TwitchSecurityExpertBot constructor.
@@ -30,7 +28,7 @@ class TwitchSecurityExpertBot extends IRCBot
      * @param string $markovDatabaseFile
      * @throws \Exception
      */
-    public function __construct(string $server, string $port, string $username, string $password, array $channels, string $markovDatabaseFile)
+    public function __construct($server, $port, $username, $password, $channels, $markovDatabaseFile)
     {
         $this->sExpert = new SecurityExpert();
         $this->m = new MarkovChains($markovDatabaseFile);
@@ -44,7 +42,7 @@ class TwitchSecurityExpertBot extends IRCBot
      * @return bool
      * @throws \Exception
      */
-    public function processMessage(string $message): bool
+    public function processMessage($message)
     {
         if (strpos($message, 'PING') !== false)
         {
@@ -83,7 +81,7 @@ class TwitchSecurityExpertBot extends IRCBot
      * @param $lowerMessage
      * @return bool
      */
-    protected function isReply($lowerMessage) : bool
+    protected function isReply($lowerMessage)
     {
         return preg_match('/:@securityexpert/i', $lowerMessage);
     }

@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Misc;
 
 /**
@@ -14,11 +12,11 @@ class NeVsratoslav extends SecurityExpert
 
     protected $image;
 
-    private int $fontSize;
+    private $fontSize;
 
-    private int $textX;
+    private $textX;
 
-    private int $textY;
+    private $textY;
 
     /**
      * @param string $imageBytes прочитанный в строку файл
@@ -27,7 +25,7 @@ class NeVsratoslav extends SecurityExpert
      * @return string обработанное изображение, готовое к сохранению в файл или передаче
      * @throws \Exception
      */
-    public function addTextToImage(string $imageBytes, string $text, string $fontPath) : string
+    public function addTextToImage($imageBytes, $text, $fontPath)
     {
         $this->loadImage($imageBytes);
         $this->calculateTextPosition($text, $fontPath);
@@ -45,7 +43,7 @@ class NeVsratoslav extends SecurityExpert
         return $imageBytes;
     }
 
-    public function closeImage() : void
+    public function closeImage()
     {
         if (is_resource($this->image)) {
             imagedestroy($this->image);
@@ -61,7 +59,7 @@ class NeVsratoslav extends SecurityExpert
      * @param string $imageBytes прочитанный в строку файл
      * @throws \Exception
      */
-    private function loadImage(string $imageBytes): void
+    private function loadImage($imageBytes)
     {
         $image = imagecreatefromstring($imageBytes);
         if (is_resource($image)) {
@@ -77,7 +75,7 @@ class NeVsratoslav extends SecurityExpert
      * @param string $text
      * @param string $fontPath
      */
-    private function calculateTextPosition(string $text, string $fontPath): void
+    private function calculateTextPosition($text, $fontPath)
     {
         $sourceImageWidth = imagesx($this->image) * 0.75;
         $sourceImageHeight = imagesy($this->image) * 0.75;

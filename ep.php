@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 use Bots\TelegramNeVsratoslavBot;
 use Commands\CommandListener;
 use Commands\HashIdCommand;
@@ -13,7 +11,7 @@ require_once './config.php';
 require_once './vendor/autoload.php';
 
 $reader = defined('IS_DEBUG') && IS_DEBUG
-    ? (new FileReader(__DIR__.'/input/text_chat.json'))
+    ? (new FileReader(__DIR__.'/input/reply_on_image.json'))
     : (new PhpInputReader());
 $db = new \PDO(PDO_MEME_DSN);
 $db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);

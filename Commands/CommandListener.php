@@ -1,30 +1,28 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Commands;
 
 
 class CommandListener
 {
-    protected array $registeredCommands = [];
+    protected $registeredCommands = [];
 
     /**
      * @var ICommand
      */
-    protected ICommand $foundCommand;
+    protected $foundCommand;
 
     /**
      * @var array
      */
-    protected array $commandArgs;
+    protected $commandArgs;
 
     /**
      * @param string $commandText подстрока текста сообщения, которую воспринимать как команду
      * @param ICommand $command
      * @return CommandListener
      */
-    public function addCommand(string $commandText, ICommand $command): CommandListener
+    public function addCommand($commandText, $command)
     {
         $this->registeredCommands [$commandText] = $command;
         return $this;
@@ -34,7 +32,7 @@ class CommandListener
      * @param string $messageText
      * @return bool
      */
-    public function isCommand(string $messageText): bool
+    public function isCommand($messageText)
     {
         foreach ($this->registeredCommands as $commandName => $commandObject) {
             if (mb_stripos($messageText, $commandName) === 0) {
@@ -52,13 +50,13 @@ class CommandListener
      * @param string $commandName
      * @return array
      */
-    public function parseCommandArgs(string $messageText, string $commandName): array
+    public function parseCommandArgs($messageText, $commandName)
     {
         $argsString = mb_strcut($messageText, mb_strlen($commandName));
         return array_values(array_filter($this->mbExplode(' ', $argsString)));
     }
 
-    public function executeFoundCommand(): string
+    public function executeFoundCommand()
     {
         return $this->foundCommand->run($this->commandArgs);
     }

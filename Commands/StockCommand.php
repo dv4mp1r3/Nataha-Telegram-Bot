@@ -1,14 +1,12 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Commands;
 
 
 class StockCommand implements ICommand
 {
 
-    public function run(array $args, array $decodedInput = []): string
+    public function run($args, $decodedInput = [])
     {
         return 'test';
     }

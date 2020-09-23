@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Misc;
 
 /**
@@ -27,7 +25,7 @@ class MemeTextFromPDO
      * @return string результат выполнения запроса $query для инстанса $pdo
      * @throws \Exception
      */
-    public static function getRandomString(\PDO $pdo, string $query): string
+    public static function getRandomString($pdo, $query)
     {
         $res = $pdo->query($query);
         if (count($res) !== 1) {

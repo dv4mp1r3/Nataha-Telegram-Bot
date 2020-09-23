@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Misc;
 
 class MarkovChains
@@ -11,20 +9,20 @@ class MarkovChains
     /**
      * @var string полный путь к файлу с цепью
      */
-    protected string $filePath;
+    protected $filePath;
 
     /**
      * @var array готовая цепь, декодированная из файла
      */
-    protected array $chain;
+    protected $chain;
 
-    protected bool $writeHumanReadable = false;
+    protected $writeHumanReadable = false;
 
     /**
      * MarkovChains constructor.
      * @param string $filePath
      */
-    public function __construct(string $filePath)
+    public function __construct($filePath)
     {
         $this->filePath = $filePath;
     }
@@ -32,7 +30,7 @@ class MarkovChains
     /**
      * @param bool $use
      */
-    public function useHumanReadableFormat(bool $use)
+    public function useHumanReadableFormat($use)
     {
         $this->writeHumanReadable = $use;
     }
@@ -42,7 +40,7 @@ class MarkovChains
      * @param string $message
      * @return void
      */
-    public function train(string $message): void
+    public function train($message)
     {
         $array = explode(" ", $message);
 
@@ -80,7 +78,7 @@ class MarkovChains
      * @return string
      * @throws \Exception
      */
-    public function generateText(int $maxWords): string
+    public function generateText($maxWords)
     {
         $text = [];
         $customTextProcessingFunctionName = 'customTextProcessing';
@@ -114,7 +112,7 @@ class MarkovChains
      * @param array $block
      * @return boolean|string
      */
-    protected function weighAndSelect(array $block)
+    protected function weighAndSelect($block)
     {
         if (empty($block)) {
             return false;
@@ -138,7 +136,7 @@ class MarkovChains
      * @return bool результат сохранения
      * @throws \Exception
      */
-    public function saveChain(): bool
+    public function saveChain()
     {
         $putData = json_encode($this->chain);
         if ($putData !== "false") {

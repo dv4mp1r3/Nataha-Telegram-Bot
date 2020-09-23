@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Misc;
 
 use Bots\IBot;
@@ -12,26 +10,26 @@ class Application
     /**
      * @var bool
      */
-    protected bool $isDebug = false;
+    protected $isDebug = false;
 
     /**
      * @var IBot
      */
-    protected IBot $bot;
+    protected $bot;
 
     /**
      * Application constructor.
      * @param IBot $bot
      * @param bool $isDebug
      */
-    public function __construct(IBot $bot, bool $isDebug = false)
+    public function __construct($bot, $isDebug = false)
     {
         $this->bot = $bot;
         $this->isDebug = $isDebug;
         set_error_handler([$this, 'errorHandler']);
     }
 
-    public function run() : void
+    public function run()
     {
         try {
             $this->bot->execute();
@@ -49,7 +47,7 @@ class Application
      * @param string $errline
      * @return boolean true
      */
-    public function errorHandler(string $errno, string $errstr, string $errfile, string $errline): bool
+    public function errorHandler($errno, $errstr, $errfile, $errline)
     {
         if (!(error_reporting() & $errno)) {
             return false;
@@ -79,7 +77,7 @@ class Application
      * @param string $message
      * @param \Exception $ex
      */
-    protected function log(int $type, string $message, \Exception $ex = null): void
+    protected function log($type, $message, $ex = null)
     {
         if (!defined('LOG_LOCAL7')) {
             return;

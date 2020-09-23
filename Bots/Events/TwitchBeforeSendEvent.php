@@ -1,11 +1,10 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Bots\Events;
 
 use Panda\Yandex\SpeechKitSDK\Cloud;
 use Panda\Yandex\SpeechKitSDK\Emotion;
+use Panda\Yandex\SpeechKitSDK\Exception\ClientException;
 use Panda\Yandex\SpeechKitSDK\Lang;
 use Panda\Yandex\SpeechKitSDK\Ru;
 use Panda\Yandex\SpeechKitSDK\Speech;
@@ -15,17 +14,17 @@ class TwitchBeforeSendEvent implements IEvent
     /**
      * @var Cloud
      */
-    protected Cloud $cloud;
+    protected $cloud;
 
     /**
      * @var int
      */
-    protected int $nodePid;
+    protected $nodePid;
 
     /**
      * @var string
      */
-    protected string $eventData;
+    protected $eventData;
 
     /**
      * TwitchBeforeSendEvent constructor.
@@ -33,7 +32,7 @@ class TwitchBeforeSendEvent implements IEvent
      * @param string $token
      * @param string $folder
      */
-    public function __construct(string $pidFile, string $token, string $folder)
+    public function __construct($pidFile, $token, $folder)
     {
         try
         {
@@ -50,7 +49,7 @@ class TwitchBeforeSendEvent implements IEvent
     /**
      * @param string $data
      */
-    public function setEventData(string $data)
+    public function setEventData($data)
     {
         $this->eventData = $data;
     }
@@ -58,7 +57,7 @@ class TwitchBeforeSendEvent implements IEvent
     /**
      * @param string $str
      */
-    protected function saveMessageAsVoice(string $str)
+    protected function saveMessageAsVoice($str)
     {
         $speech = new Speech($str);
         $speech->setVoice(Ru::OMAZH)
