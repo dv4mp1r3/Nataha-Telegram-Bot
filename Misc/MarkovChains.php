@@ -144,7 +144,7 @@ class MarkovChains
         if ($putData !== "false") {
             $result = file_put_contents($this->filePath, $putData, LOCK_EX);
             if ($this->writeHumanReadable) {
-                file_put_contents($this->chatId . ".json.txt", print_r($this->chain, true), LOCK_EX);
+                file_put_contents($this->filePath . ".json.txt", print_r($this->chain, true), LOCK_EX);
             }
             return is_int($result) && $result > 0;
         } else {

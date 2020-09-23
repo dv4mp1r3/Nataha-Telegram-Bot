@@ -13,7 +13,12 @@
     "itpanda-llc/yandex-speechkit-php-sdk": "dev-master",
     "ext-curl": "*",
     "ext-json": "*",
-    "ext-sockets": "*"
+    "ext-sockets": "*",
+    "ext-pdo": "*",
+    "ext-posix": "*",
+    "ext-pcntl": "*",
+    "ext-gd": "*",
+    "ext-mbstring": "*"
   },
   "autoload": {
     "psr-4": {
