@@ -1,7 +1,7 @@
 <?php
 
 if (PHP_VERSION_ID < 70200) {
-    die("PHP >= 7.0 required" . PHP_EOL);
+    die("PHP >= 7.2 required" . PHP_EOL);
 }
 
 declare(strict_types=1);
