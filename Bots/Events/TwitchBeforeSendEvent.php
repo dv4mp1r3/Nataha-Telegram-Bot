@@ -27,6 +27,12 @@ class TwitchBeforeSendEvent implements IEvent
      */
     protected string $eventData;
 
+    /**
+     * TwitchBeforeSendEvent constructor.
+     * @param string $pidFile
+     * @param string $token
+     * @param string $folder
+     */
     public function __construct(string $pidFile, string $token, string $folder)
     {
         try
@@ -49,6 +55,9 @@ class TwitchBeforeSendEvent implements IEvent
         $this->eventData = $data;
     }
 
+    /**
+     * @param string $str
+     */
     protected function saveMessageAsVoice(string $str)
     {
         $speech = new Speech($str);

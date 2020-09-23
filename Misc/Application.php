@@ -19,6 +19,11 @@ class Application
      */
     protected IBot $bot;
 
+    /**
+     * Application constructor.
+     * @param IBot $bot
+     * @param bool $isDebug
+     */
     public function __construct(IBot $bot, bool $isDebug = false)
     {
         $this->bot = $bot;

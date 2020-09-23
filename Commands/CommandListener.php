@@ -19,12 +19,21 @@ class CommandListener
      */
     protected array $commandArgs;
 
+    /**
+     * @param string $commandText подстрока текста сообщения, которую воспринимать как команду
+     * @param ICommand $command
+     * @return CommandListener
+     */
     public function addCommand(string $commandText, ICommand $command): CommandListener
     {
         $this->registeredCommands [$commandText] = $command;
         return $this;
     }
 
+    /**
+     * @param string $messageText
+     * @return bool
+     */
     public function isCommand(string $messageText): bool
     {
         foreach ($this->registeredCommands as $commandName => $commandObject) {
@@ -37,6 +46,12 @@ class CommandListener
         return false;
     }
 
+    /**
+     * парсинг аргументов команды из текста сообщения
+     * @param string $messageText
+     * @param string $commandName
+     * @return array
+     */
     public function parseCommandArgs(string $messageText, string $commandName): array
     {
         $argsString = mb_strcut($messageText, mb_strlen($commandName));

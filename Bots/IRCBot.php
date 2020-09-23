@@ -30,6 +30,14 @@ abstract class IRCBot extends SocketBot{
 
     protected int $timeoutMicro = 10000;
 
+    /**
+     * IRCBot constructor.
+     * @param string $server
+     * @param string $port
+     * @param string $username
+     * @param string $password
+     * @param array $channels
+     */
     public function __construct(string $server, string $port, string $username, string $password, array $channels)
     {
         parent::__construct($server, $port);
@@ -38,6 +46,9 @@ abstract class IRCBot extends SocketBot{
         $this->channels = $channels;
     }
 
+    /**
+     * @param int $microSeconds
+     */
     public function setIterTimeout(int $microSeconds)
     {
         $this->timeoutMicro = $microSeconds;
@@ -65,7 +76,7 @@ abstract class IRCBot extends SocketBot{
         }
     }
 
-    protected function do()
+    protected function do() : void
     {
         $buffer	= '';
         while(true)
@@ -87,6 +98,10 @@ abstract class IRCBot extends SocketBot{
         }
     }
 
+    /**
+     * @param string $message
+     * @return bool
+     */
     public abstract function processMessage(string $message) : bool;
     
 }

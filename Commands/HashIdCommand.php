@@ -13,7 +13,7 @@ class HashIdCommand implements ICommand
     /**
      * @inheritDoc
      */
-    public function run(array $args, $decodedInput = []): string
+    public function run(array $args, array $decodedInput = []): string
     {
         if (!is_array($args)) {
             throw new \InvalidArgumentException('$payload is not array');

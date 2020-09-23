@@ -30,6 +30,11 @@ class SocketBot implements IBot
      */
     protected IEvent $beforeSendEvent;
 
+    /**
+     * @param string $eventType
+     * @param IEvent $event
+     * @return SocketBot
+     */
     public function setEvent(string $eventType, IEvent $event) : SocketBot
     {
         switch ($eventType)
@@ -42,6 +47,11 @@ class SocketBot implements IBot
         return $this;
     }
 
+    /**
+     * SocketBot constructor.
+     * @param string $server
+     * @param string $port
+     */
     public function __construct(string $server, string $port)
     {
         $this->server = $server;
@@ -101,6 +111,10 @@ class SocketBot implements IBot
         }
     }
 
+    /**
+     * @param string $string
+     * @param bool $startEvents
+     */
     protected function sendString(string $string, bool $startEvents = false)
     {
         if ($startEvents && $this->beforeSendEvent instanceof IEvent)
@@ -112,6 +126,11 @@ class SocketBot implements IBot
         $this->debugPrintSocketError(__FUNCTION__, $i);
     }
 
+    /**
+     * @param int $len
+     * @param int $type
+     * @return string
+     */
     protected function receiveString(int $len, int $type) : string
     {
         $buffer = '';

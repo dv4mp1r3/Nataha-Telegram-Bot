@@ -21,6 +21,12 @@ class TelegramMarkovBot extends TelegramBot
      */
     protected MarkovChains $markov;
 
+    /**
+     * TelegramMarkovBot constructor.
+     * @param CommandListener $listener
+     * @param IReader $reader
+     * @throws \Exception
+     */
     public function __construct(CommandListener $listener, IReader $reader)
     {
         parent::__construct($listener, $reader);
