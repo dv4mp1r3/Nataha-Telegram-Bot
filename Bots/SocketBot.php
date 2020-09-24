@@ -28,7 +28,7 @@ class SocketBot implements IBot
     /**
      * @var IEvent
      */
-    protected IEvent $beforeSendEvent;
+    protected ?IEvent $beforeSendEvent = null;
 
     /**
      * @param string $eventType
@@ -123,7 +123,7 @@ class SocketBot implements IBot
         }
         $size = strlen($string);
         $i = \socket_write($this->s, $string, $size);
-        $this->debugPrintSocketError(__FUNCTION__, $i);
+        $this->debugPrintSocketError(__FUNCTION__, (int)$i);
     }
 
     /**
@@ -135,7 +135,7 @@ class SocketBot implements IBot
     {
         $buffer = '';
         $i = socket_recv($this->s, $buffer, $len, $type);
-        $this->debugPrintSocketError(__FUNCTION__, $i);
+        $this->debugPrintSocketError(__FUNCTION__, (int)$i);
         if ($i === 0 || !$i)
         {
             return '';
