@@ -2,6 +2,7 @@
 
 namespace Bots;
 
+use Bots\Events\IEvent;
 use Bots\Events\TwitchBeforeSendEvent;
 use Misc\MarkovChains;
 use Misc\SecurityExpert;
@@ -63,8 +64,10 @@ class TwitchSecurityExpertBot extends IRCBot
             /**
              * @var TwitchBeforeSendEvent $beforeStartEvent
              */
-            $beforeStartEvent = $this->beforeSendEvent;
-            $beforeStartEvent->setEventData($genText);
+            if ($this->beforeSendEvent instanceof IEvent) {
+                $beforeStartEvent = $this->beforeSendEvent;
+                $beforeStartEvent->setEventData($genText);
+            }
             $this->sendString($str, true);
         }
         if($this->sExpert->isHaha($lowerMessage))
@@ -83,6 +86,6 @@ class TwitchSecurityExpertBot extends IRCBot
      */
     protected function isReply($lowerMessage)
     {
-        return preg_match('/:@securityexpert/i', $lowerMessage);
+        return preg_match('/:@securityexpert/i', $lowerMessage) > 0;
     }
 }

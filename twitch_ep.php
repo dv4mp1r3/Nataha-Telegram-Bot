@@ -18,11 +18,11 @@ global $yaCloudData;
         $twitchData['password'],
         ['dv4mp1r3'],
         CONFIG_PATH))
-        ->setEvent(\Bots\SocketBot::BEFORE_SEND_EVENT,
+        /*->setEvent(\Bots\SocketBot::BEFORE_SEND_EVENT,
             new \Bots\Events\TwitchBeforeSendEvent(
                 '/tmp/security.pid',
                 $yaCloudData['token'],
                 $yaCloudData['folder'])
-        ),
+        )*/,
     defined('IS_DEBUG') && IS_DEBUG
 ))->run();

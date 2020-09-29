@@ -64,7 +64,7 @@ class SecurityExpert
      */
     public function isReply($lowerRawText)
     {
-        return preg_match("/сосур(.*)|сосурити|сусурька|сасурян|сосурян/i", $lowerRawText);
+        return preg_match("/сосур(.*)|сосурити|сусурька|сасурян|сосурян/i", $lowerRawText) > 0;
     }
 
     /**
@@ -74,7 +74,7 @@ class SecurityExpert
      */
     public function isHaha($loweRawText)
     {
-        return preg_match("/ахах/i", $loweRawText);
+        return preg_match("/ахах/i", $loweRawText) > 0;
     }
 
 
