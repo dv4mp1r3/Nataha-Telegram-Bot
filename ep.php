@@ -6,6 +6,7 @@ use Bots\TelegramNeVsratoslavBot;
 use Commands\CommandListener;
 use Commands\HashIdCommand;
 use Misc\Application;
+use Misc\Logger;
 use Misc\Input\FileReader;
 use Misc\Input\PhpInputReader;
 
@@ -17,14 +18,23 @@ $reader = defined('IS_DEBUG') && IS_DEBUG
     : (new PhpInputReader());
 $db = new \PDO(PDO_MEME_DSN);
 $db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-(new Application(
-    (new TelegramNeVsratoslavBot(
-        (new CommandListener())
-        ->addCommand('/hashid', new HashIdCommand()),
-        $reader
-    ))->setFontPath(__DIR__.'/lobster.ttf')
-        ->setMemeTextQuery(PDO_MEME_QUERY)
-        ->setMemTextPdo($db),
-    defined('IS_DEBUG') && IS_DEBUG
-)
-)->run();
+$logger = new Logger();
+try{
+    (new Application(
+        (new TelegramNeVsratoslavBot(
+            (new CommandListener())
+                ->addCommand('/hashid', new HashIdCommand()),
+            $reader
+        ))->setFontPath(__DIR__.'/lobster.ttf')
+            ->setMemeTextQuery(PDO_MEME_QUERY)
+            ->setMemTextPdo($db),
+        defined('IS_DEBUG') && IS_DEBUG,
+        $logger
+    )
+    )->run();
+}
+catch(\Exception $ex)
+{
+    $logger->log(LOG_ALERT, '', $ex);
+}
+

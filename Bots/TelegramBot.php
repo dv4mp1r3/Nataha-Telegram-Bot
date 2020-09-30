@@ -71,6 +71,7 @@ class TelegramBot extends AbstractBaseBot
     /**
      * Попытка обработки зарегистрированных команд
      * @return mixed
+     * @throws \Exception
      * @see registerCommand
      */
     public function execute(): void
@@ -84,6 +85,7 @@ class TelegramBot extends AbstractBaseBot
         } catch (\Exception $ex) {
             if (defined('IS_DEBUG') && IS_DEBUG && defined('ID_CREATOR')) {
                 $this->sendMessage(ID_CREATOR, $this->buildErrorReport());
+                throw $ex;
             }
         }
     }
