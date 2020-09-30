@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Misc;
 
 class Logger
@@ -16,7 +14,7 @@ class Logger
      * @param string $errline
      * @return boolean true
      */
-    public function errorHandler(string $errno, string $errstr, string $errfile, string $errline): bool
+    public function errorHandler($errno, $errstr, $errfile, $errline)
     {
         if (!(error_reporting() & $errno)) {
             return false;
@@ -46,7 +44,7 @@ class Logger
      * @param string $message
      * @param \Exception $ex
      */
-    public function log(int $type, string $message, \Exception $ex = null): void
+    public function log($type, $message, $ex = null)
     {
         if (!defined('LOG_LOCAL7')) {
             return;
