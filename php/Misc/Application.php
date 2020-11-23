@@ -27,7 +27,7 @@ class Application
      * @param bool $isDebug
      * @param Logger $l
      */
-    public function __construct(IBot $bot, bool $isDebug = false, Logger $l)
+    public function __construct(IBot $bot, Logger $l, bool $isDebug = false)
     {
         $this->bot = $bot;
         $this->isDebug = $isDebug;

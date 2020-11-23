@@ -28,8 +28,8 @@ try{
         ))->setFontPath(__DIR__.'/lobster.ttf')
             ->setMemeTextQuery(PDO_MEME_QUERY)
             ->setMemTextPdo($db),
-        defined('IS_DEBUG') && IS_DEBUG,
-        $logger
+        $logger,
+        defined('IS_DEBUG') && IS_DEBUG
     )
     )->run();
 }

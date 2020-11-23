@@ -2,14 +2,19 @@
 
 declare(strict_types=1);
 
+use Misc\Logger;
+use Misc\Application;
+use Bots\TwitchSecurityExpertBot;
+
 require_once './config.php';
 require_once './vendor/autoload.php';
 
 global  $twitchData;
 global  $yaCloudData;
 
-(new \Misc\Application(
-    (new \Bots\TwitchSecurityExpertBot(
+$logger = new Logger();
+(new Application(
+    (new TwitchSecurityExpertBot(
         TWITCH_DEFAULT_SERVER,
         TWITCH_DEFAULT_PORT,
         $twitchData['username'],
@@ -22,5 +27,6 @@ global  $yaCloudData;
                 $yaCloudData['token'],
                 $yaCloudData['folder'])
         )*/,
+    $logger,
     defined('IS_DEBUG') && IS_DEBUG
 ))->run();

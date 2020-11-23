@@ -1,9 +1,9 @@
 /nbproject/private/
-data.json
-data.json.txt
-config.php
+/php/data.json
+/php/data.json.txt
+/php/config.php
 .idea
-/vendor
-/node_modules
-/input
-testData.php
+/php/vendor
+/js/node_modules
+/php/input
+/php/testData.php
