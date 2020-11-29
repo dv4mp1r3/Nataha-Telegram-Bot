@@ -4,10 +4,11 @@ services:
     build:
       context: ./php
       dockerfile: php74.dockerfile
-    environment:
-      - PHP_IDE_CONFIG=serverName=nataha.local
+    env_file:
+      - configs/vars.env
     volumes:
       - ./php:/var/www
+      - ./audio:/var/www/audio
       - ./configs/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
   nginx:
     image: library/nginx:alpine
@@ -20,8 +21,6 @@ services:
       - php
     links:
       - php
-  redis:
-    image: library/redis:alpine
   node:
     build:
       context: ./js
@@ -32,6 +31,7 @@ services:
       NODE_ENV: "development"
     volumes:
       - ./js:/home/node/app
+      - ./audio:/home/node/app/audio
     user: "node"
     ports:
     - "9229:9229"

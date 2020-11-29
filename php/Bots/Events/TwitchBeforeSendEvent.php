@@ -18,9 +18,9 @@ class TwitchBeforeSendEvent implements IEvent
     protected Cloud $cloud;
 
     /**
-     * @var int
+     * @var string
      */
-    protected int $nodePid;
+    protected string $nodeUrl;
 
     /**
      * @var string
@@ -29,15 +29,15 @@ class TwitchBeforeSendEvent implements IEvent
 
     /**
      * TwitchBeforeSendEvent constructor.
-     * @param string $pidFile
+     * @param string $nodeUrl
      * @param string $token
      * @param string $folder
      */
-    public function __construct(string $pidFile, string $token, string $folder)
+    public function __construct(string $nodeUrl, string $token, string $folder)
     {
         try
         {
-            $this->nodePid = intval(file_get_contents($pidFile));
+            $this->nodeUrl = $nodeUrl;
             $this->cloud = new Cloud($token, $folder);
         }
         catch (ClientException $e)
@@ -57,25 +57,32 @@ class TwitchBeforeSendEvent implements IEvent
 
     /**
      * @param string $str
+     * @return string
      */
-    protected function saveMessageAsVoice(string $str)
+    protected function saveMessageAsVoice(string $str) : string
     {
         $speech = new Speech($str);
         $speech->setVoice(Ru::OMAZH)
             ->setEmotion(Emotion::EVIL)
             ->setLang(Lang::RU);
         $media = $this->cloud->request($speech);
-        file_put_contents('t.ogg', $media);
+        $fileName = md5((string)time()).'.ogg';
+        file_put_contents("{$_ENV['PWD']}/audio/$fileName", $media);
+        return $fileName;
     }
 
-    protected function playVoice()
+    protected function playVoice(string $fileName)
     {
-        posix_kill($this->nodePid, SIGUSR2);
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, "{$this->nodeUrl}/{$fileName}");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        $output = curl_exec($ch);
+        curl_close($ch);
     }
 
     public function run()
     {
-        $this->saveMessageAsVoice($this->eventData);
-        $this->playVoice();
+        $fileName = $this->saveMessageAsVoice($this->eventData);
+        $this->playVoice($fileName);
     }
 }

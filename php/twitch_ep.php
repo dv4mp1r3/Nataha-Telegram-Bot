@@ -23,7 +23,7 @@ $logger = new Logger();
         CONFIG_PATH))
         /*->setEvent(\Bots\SocketBot::BEFORE_SEND_EVENT,
             new \Bots\Events\TwitchBeforeSendEvent(
-                '/tmp/security.pid',
+                "http://node:3000/audio",
                 $yaCloudData['token'],
                 $yaCloudData['folder'])
         )*/,
