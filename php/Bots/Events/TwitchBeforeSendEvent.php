@@ -66,6 +66,11 @@ class TwitchBeforeSendEvent implements IEvent
             ->setEmotion(Emotion::EVIL)
             ->setLang(Lang::RU);
         $media = $this->cloud->request($speech);
+        $maybeError = json_decode($media, true);
+        if (json_last_error() === JSON_ERROR_NONE
+            && array_key_exists('error_code', $maybeError)) {
+            throw new \Exception("Speechkit error: {$maybeError['error_code']}");
+        }
         $fileName = md5((string)time()).'.ogg';
         file_put_contents("{$_ENV['PWD']}/audio/$fileName", $media);
         return $fileName;
