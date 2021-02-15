@@ -7,8 +7,7 @@ RUN apk --no-cache --virtual build-dependencies add \
     python3 \
     make \
     g++ \
-    && npm install \
-    && apk del build-dependencies
+    && npm install
 
 FROM node_assets as node_app
 CMD ["npm", "start"]

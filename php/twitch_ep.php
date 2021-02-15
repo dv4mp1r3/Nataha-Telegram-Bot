@@ -21,12 +21,12 @@ $logger = new Logger();
         $twitchData['password'],
         ['dv4mp1r3'],
         CONFIG_PATH))
-        /*->setEvent(\Bots\SocketBot::BEFORE_SEND_EVENT,
+        ->setEvent(\Bots\SocketBot::BEFORE_SEND_EVENT,
             new \Bots\Events\TwitchBeforeSendEvent(
                 "http://node:3000/audio",
                 $yaCloudData['token'],
                 $yaCloudData['folder'])
-        )*/,
+        ),
     $logger,
     defined('IS_DEBUG') && IS_DEBUG
 ))->run();

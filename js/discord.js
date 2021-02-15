@@ -14,13 +14,19 @@ client.on('message', async message => {
     if (message.content === '/join') {
         if (message.member.voice.channel) {
             const connection = await message.member.voice.channel.join();
-            api.get('/audio/:file', function(req, res){
-                let soundFilePath = process.env.PWD+'/audio/'+req.params.file;
-                const d = connection.play(fs.createReadStream(soundFilePath), {
-                    type: 'ogg/opus',
-                });
+            api.get('/audio/:file', function (req, res) {
+                let soundFilePath = process.env.PWD + '/audio/' + req.params.file;
+                console.log(`Voice file path: ${soundFilePath}`);
+                if (!fs.existsSync(soundFilePath)) {
+                    console.log(`File ${soundFilePath} doesn't exist`);
+                } else {
+                    const d = connection.play(fs.createReadStream(soundFilePath), {
+                        type: 'ogg/opus',
+                    });
+                }
+                res.send('');
             });
         }
     }
 });
-client.login(process.env.DISCORD_TOKEN);
+client.login(process.env.DISCORD_TOKEN_DEBUG);
