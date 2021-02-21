@@ -58,6 +58,7 @@ class TwitchBeforeSendEvent implements IEvent
     /**
      * @param string $str
      * @return string
+     * @throws \Exception
      */
     protected function saveMessageAsVoice(string $str) : string
     {
@@ -72,16 +73,25 @@ class TwitchBeforeSendEvent implements IEvent
             throw new \Exception("Speechkit error: {$maybeError['error_code']}");
         }
         $fileName = md5((string)time()).'.ogg';
-        file_put_contents("{$_ENV['PWD']}/audio/$fileName", $media);
+        $res = file_put_contents("/tmp/$fileName", $media);
         return $fileName;
     }
 
     protected function playVoice(string $fileName)
     {
+        $filePath = "/tmp/$fileName";
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, "{$this->nodeUrl}/{$fileName}");
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, [
+            'voice' => new \CurlFile($filePath)
+        ]);
         $output = curl_exec($ch);
+        unlink($fileName);
+        if (curl_errno($ch) !== CURLE_OK) {
+            $error = curl_error($ch);
+            curl_close($ch);
+            throw new \Exception(__FUNCTION__ . " error: $error");
+        }
         curl_close($ch);
     }
 

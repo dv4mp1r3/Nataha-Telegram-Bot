@@ -8,8 +8,8 @@ services:
       - configs/vars.env
     volumes:
       - ./php:/var/www
-      - ./audio:/var/www/audio
       - ./configs/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+    entrypoint: ["php", "twitch_ep.php"]
   nginx:
     image: library/nginx:alpine
     ports:
@@ -31,7 +31,6 @@ services:
       NODE_ENV: "development"
     volumes:
       - ./js:/home/node/app
-      - ./audio:/home/node/app/audio
     user: "node"
     ports:
     - "9229:9229"
