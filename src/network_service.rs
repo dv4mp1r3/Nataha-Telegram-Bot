@@ -29,7 +29,6 @@ impl UnixSocketHandler{
                         match stream.try_read(&mut msg) {
                             Ok(n) => {
                                 if n == 0{
-
                                     break;
                                 }
                                 msg.truncate(n);
