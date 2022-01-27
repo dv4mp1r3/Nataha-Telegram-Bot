@@ -1,143 +1,152 @@
-use std::collections::{HashMap};
-use serde_json::{Value};
-use rand::Rng;
-use rand::prelude::*;
-use rand::seq::SliceRandom;
-use indexmap::IndexMap;
-use std::time::Instant;
-use rand::distributions::{WeightedIndex};
+use std::collections::HashMap;
+use std::fs::File;
+use std::io::BufReader;
+use rand::prelude::SliceRandom;
+use serde::Deserialize;
+use serde::de::Deserializer;
 
-#[path = "text_generator.rs"] mod text_generator;
+use rand::rngs::StdRng;
+use rand::distributions::WeightedIndex;
+use rand::SeedableRng;
+use rand::distributions::Distribution;
 
-pub struct MarkovChain{
-    pub chain: HashMap<String,Value>,
-    pub iChain: IndexMap<String, Value>
+
+
+#[derive(Deserialize, Debug)]
+pub struct WordChain{
+    #[serde(deserialize_with="value_to_items")]
+    pub chain : HashMap<String, ChainObjects>,
+    #[serde(default="create_empty_rng_because_serde_cant_see_i_already_implementing_it_inside_custom_deserializer_method_that_he_asks_for_and_skip_doesnt_help")]
+    #[serde(skip)]
+    pub rng_thread : StdRng,
+    #[serde(skip)]
+    pub keys: Vec<String>
 }
 
-impl MarkovChain{
-    pub fn new(hm : HashMap<String, Value>) -> MarkovChain{
-        let now = Instant::now();
-        let mut im = IndexMap::new();
-        let _hm = hm;
-        for value in _hm.clone(){
-            im.insert(value.0, value.1);
-        }
-        println!("Time spend to convertation :{:?}", now.elapsed());
-        MarkovChain{
-            chain: _hm,
-            iChain: im
+impl WordChain{
+    pub fn new(path : &str) -> Result<Self, Box<dyn std::error::Error>>{
+        let file = File::open(path)?;
+        let reader = BufReader::new(file);
+        let mut val:WordChain = serde_json::from_reader(reader)?;
+        val.rng_thread = SeedableRng::from_entropy();
+        val.keys = val.chain.keys().cloned().map(|k| k).collect::<Vec<String>>();
+        if val.keys.len() == 0{
+            Err("Json file is empty? Quiting")?
+        }else{
+            Ok(val)
         }
     }
-    fn find_init_word(&self, word : &str) -> Vec<String>{
-        let _ch = self.get_from_chain(word);
-        match _ch {
+    pub fn get_random_init_word(&mut self) -> String{
+        self.keys.choose(&mut self.rng_thread).unwrap().to_string()
+    } 
+    pub fn generate_answer(&mut self, income_text : &str) -> Result<String, Box<dyn std::error::Error>>{
+        let mut answer : String = "".to_string();
+
+        match &self.chain.get(income_text){
             Some(x) => {
-                self.get_random_from_markov_chain(x)
+                let str = x.get_random_sample_by_weight(&mut self.rng_thread);
+                answer.push_str(&str);
+                answer.push_str(" ");
             }
             None => {
-                self.find_random_chain()
+                answer.push_str(&self.get_random_init_word());
+                answer.push_str(" ");
             }
         }
-    }
-    fn get_from_chain(&self, word : &str) -> Option<&Value>{
-        self.chain.get(base64::encode(word).as_str())
-    }
-
-    fn vector_to_human(&self, vec : &Vec<&String>) -> String{
-        let mut _s : Vec<String> = vec![];
-        for item in vec{
-            _s.push(String::from_utf8(base64::decode(item).unwrap()).unwrap());
+        while answer.len() < 300{
+            answer.push_str(&self.continue_sentence(&answer));
+            answer.push_str(" ");
         }
-        _s.join(" ")
+
+        Ok(answer)
     }
 
-    fn get_random_from_markov_chain(&self, x : &Value) -> Vec<String>{
-        let mut rng = thread_rng();
-        let mut continue_vec : Vec<String> = vec![];
-        let mut hash_vec: Vec<(&String, i64)> = vec![];
-        for (key,val) in x.as_object().unwrap(){
-            hash_vec.push((key, val.as_i64().unwrap()));
-        }
-        let distributed_by_weight = WeightedIndex::new(hash_vec.iter().map(|item| item.1)).unwrap();
-        let _w = &hash_vec[distributed_by_weight.sample(&mut rng)].0;
-        continue_vec.push(_w.to_string());
-        continue_vec
-    }
-    fn find_random_chain(&self) -> Vec<String>{
-        let mut rng = thread_rng();
-
-        let range = rand::thread_rng().gen_range(0..self.chain.len());
-        let start_word = self.iChain.get_index(range);
-        let _s: Vec<String> = vec![];
-        let mut start_sentence : Vec<String> = vec![];
-        match start_word {
-                None =>{}
-                Some(x) => {
-                    start_sentence.push(x.0.to_string());
-                    let mut hash_vec: Vec<(&String, i64)> = vec![];
-                    for (key,val) in x.1.as_object().unwrap(){
-                        hash_vec.push((key, val.as_i64().unwrap()));
+    pub fn continue_sentence(&mut self, sentence : &str) -> String{
+        let words = sentence.split_whitespace().collect::<Vec<&str>>();
+        let lword = words.last();
+        match lword{
+            Some(last_word) => {
+                match &self.chain.get(&last_word.to_string()){
+                    Some(x) => {
+                        let str = x.get_random_sample_by_weight(&mut self.rng_thread);
+                        str
                     }
-                    let distributed_by_weight = WeightedIndex::new(hash_vec.iter().map(|item| item.1)).unwrap();
-                    let _w = &hash_vec[distributed_by_weight.sample(&mut rng)].0;
-                    start_sentence.push(_w.to_string());
+                    None => {
+                        self.get_random_init_word()
+                    }
                 }
+            }
+            None => {
+                self.get_random_init_word()
+            }
         }
-        start_sentence
+
+
+    }
+}
+
+#[derive(Debug)]
+pub struct ChainObjects{
+    pub items : Vec<(String, i64)>,
+    pub weights: WeightedIndex<i64>
+}
+
+
+fn create_empty_rng_because_serde_cant_see_i_already_implementing_it_inside_custom_deserializer_method_that_he_asks_for_and_skip_doesnt_help() -> StdRng{
+    SeedableRng::from_entropy()
+}
+impl ChainObjects{
+    pub fn new(items : Vec<(String, i64)>) -> Option<Self>{
+        let ws = WeightedIndex::new(
+            items.iter()
+            .map(|item| item.1));
+        match ws{
+            Ok(x) => {
+                Some( Self{
+                        items,
+                        weights: x
+                    } )
+            }
+            Err(e) => {
+                println!("Unable to create WeightedIndex for element with error: {:?}", e);
+                None
+            }
+        }
+
+
     }
 
-    fn get_non_action_words<'a>(&'a self, v : &'a  Vec<&str>) -> Vec<&str>{
-        let action_match  = vec!["сосур", "сасур"];
-        let mut available_words : Vec<&str> = vec![];
-        if v.len() > 1{
-            for word in v{
-                let mut _f = false;
-                for _match in &action_match{
-                    if word.contains(_match) == true{
-                        _f = true;
-                    }
+    pub fn get_random_sample_by_weight(&self, thread_rng : &mut StdRng) -> String{
+        let unknown = self.weights.sample(thread_rng);
+        let item = &self.items[unknown].0;
+        item.to_owned()
+    }
+
+}
+
+fn value_to_items<'de, D>(deserializer: D) -> 
+    Result<HashMap<String, ChainObjects>, D::Error>
+    where D: Deserializer<'de>
+{
+    let mut items : HashMap<String, ChainObjects> = HashMap::new();
+    let value: serde_json::Value = serde::Deserialize::deserialize(deserializer)?;
+    let object = value
+    .as_object()
+    .ok_or(serde::de::Error::custom("unable to extract data from json file"))?;
+    for (k, v) in object.iter(){
+        match v.as_object(){
+            Some(data) => {
+                let objs : Vec<(String, i64)> = data.iter().map(|(s, val)|{
+                    (s.to_string(), val.as_i64().unwrap()) // You already must be sure that your data is actually integers
+                }).collect();
+                if let Some(co) = ChainObjects::new(objs){
+                    items.insert(k.to_string(), co);
                 }
                 
-                if _f == false{
-                    available_words.push(word);
-                }
             }
-        }
-        available_words
-    }
-
-    pub fn continue_sentence_from_chain(&self, word : &String) -> Vec<String>{
-        let _ch = self.chain.get(word);
-        match _ch{
-            Some(x) => {
-                self.get_random_from_markov_chain(x)
-            }
-            None => {
-                self.find_random_chain()
-            }
+            _ => {}
         }
     }
-
-    pub fn generate_text(&self, incoming_message : &String) -> String{
-        let start_words:Vec<&str> = incoming_message.split_ascii_whitespace().collect();
-        let available_words:Vec<&str> = self.get_non_action_words(&start_words);
-        let mut start_word : &str = "";
-        if available_words.len() > 0{
-            start_word = available_words.choose(&mut rand::thread_rng()).unwrap();
-        }
-        let mut sentence : Vec<String> = vec![];
-        if start_word != "" {
-            sentence.append(&mut self.find_init_word(start_word));
-        }else{
-            sentence.append(&mut self.find_random_chain());
-        }
-
-        while sentence.join(" ").len() < 300{
-            let word = sentence.last().unwrap();
-            sentence.append(&mut self.continue_sentence_from_chain(&word));
-        }
-        let s : Vec<String> = sentence.iter().map(|word| String::from_utf8(base64::decode(word).unwrap()).unwrap()).collect();
-        String::from(s.join(" "))
-    }
-
+    Ok(items)
 }
+

@@ -1,0 +1,1 @@
+/home/john/Coding/Rust/Nataha-Telegram-Bot/target/release/sosurity: /home/john/Coding/Rust/Nataha-Telegram-Bot/src/main.rs /home/john/Coding/Rust/Nataha-Telegram-Bot/src/markov.rs /home/john/Coding/Rust/Nataha-Telegram-Bot/src/network_service.rs
