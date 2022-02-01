@@ -1,6 +1,8 @@
 use std::collections::HashMap;
 use std::fs::File;
+use std::hash::Hash;
 use std::io::BufReader;
+use evmap_derive::ShallowCopy;
 use rand::prelude::SliceRandom;
 use serde::Deserialize;
 use serde::de::Deserializer;
@@ -9,13 +11,15 @@ use rand::rngs::StdRng;
 use rand::distributions::WeightedIndex;
 use rand::SeedableRng;
 use rand::distributions::Distribution;
+use std::sync::Arc;
+
+use crate::evmap_wrapper::EvMapHandlerAsync;
 
 
-
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize)]
 pub struct WordChain{
     #[serde(deserialize_with="value_to_items")]
-    pub chain : HashMap<String, ChainObjects>,
+    pub chain : EvMapHandlerAsync<String, ChainObjects>,
     #[serde(default="create_empty_rng_because_serde_cant_see_i_already_implementing_it_inside_custom_deserializer_method_that_he_asks_for_and_skip_doesnt_help")]
     #[serde(skip)]
     pub rng_thread : StdRng,
@@ -24,12 +28,14 @@ pub struct WordChain{
 }
 
 impl WordChain{
-    pub fn new(path : &str) -> Result<Self, Box<dyn std::error::Error>>{
+    pub fn new<'a>(path : &str) -> Result<Self, Box<dyn std::error::Error>>{
         let file = File::open(path)?;
         let reader = BufReader::new(file);
         let mut val:WordChain = serde_json::from_reader(reader)?;
         val.rng_thread = SeedableRng::from_entropy();
-        val.keys = val.chain.keys().cloned().map(|k| k).collect::<Vec<String>>();
+        let cloned = val.chain.reader.clone();
+        val.keys = EvMapHandlerAsync::keys(&cloned);
+        println!("Keys: {}", val.keys.len());
         if val.keys.len() == 0{
             Err("Json file is empty? Quiting")?
         }else{
@@ -39,10 +45,16 @@ impl WordChain{
     pub fn get_random_init_word(&mut self) -> String{
         self.keys.choose(&mut self.rng_thread).unwrap().to_string()
     } 
+
+    pub async fn _train(&mut self, text : String){
+        println!("Training : {}", text);
+        tokio::time::sleep(tokio::time::Duration::from_millis(200)).await;
+    }
     pub fn generate_answer(&mut self, income_text : &str) -> Result<String, Box<dyn std::error::Error>>{
         let mut answer : String = "".to_string();
-
-        match &self.chain.get(income_text){
+        let cloned = self.chain.reader.clone();
+        
+        match EvMapHandlerAsync::get_item(&cloned, &income_text.to_string()){
             Some(x) => {
                 let str = x.get_random_sample_by_weight(&mut self.rng_thread);
                 answer.push_str(&str);
@@ -64,9 +76,10 @@ impl WordChain{
     pub fn continue_sentence(&mut self, sentence : &str) -> String{
         let words = sentence.split_whitespace().collect::<Vec<&str>>();
         let lword = words.last();
+        let cloned = self.chain.reader.clone();
         match lword{
             Some(last_word) => {
-                match &self.chain.get(&last_word.to_string()){
+                match EvMapHandlerAsync::get_item(&cloned, &last_word.to_string()){
                     Some(x) => {
                         let str = x.get_random_sample_by_weight(&mut self.rng_thread);
                         str
@@ -84,12 +97,25 @@ impl WordChain{
 
     }
 }
-
-#[derive(Debug)]
+#[derive(Debug, ShallowCopy)]
 pub struct ChainObjects{
     pub items : Vec<(String, i64)>,
-    pub weights: WeightedIndex<i64>
+    pub weights: Arc<WeightedIndex<i64>>
 }
+
+
+use std::hash::Hasher;
+impl Hash for ChainObjects{
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.items.hash(state);
+    }
+}
+impl PartialEq for ChainObjects {
+    fn eq(&self, _other: &Self) -> bool {
+        false
+    }
+}
+impl Eq for ChainObjects {}
 
 
 fn create_empty_rng_because_serde_cant_see_i_already_implementing_it_inside_custom_deserializer_method_that_he_asks_for_and_skip_doesnt_help() -> StdRng{
@@ -104,7 +130,7 @@ impl ChainObjects{
             Ok(x) => {
                 Some( Self{
                         items,
-                        weights: x
+                        weights: Arc::new(x)
                     } )
             }
             Err(e) => {
@@ -124,15 +150,17 @@ impl ChainObjects{
 
 }
 
-fn value_to_items<'de, D>(deserializer: D) -> 
-    Result<HashMap<String, ChainObjects>, D::Error>
+fn value_to_items<'a, 'de, D>(deserializer: D) -> 
+    Result<EvMapHandlerAsync<String, ChainObjects>, D::Error>
     where D: Deserializer<'de>
 {
-    let mut items : HashMap<String, ChainObjects> = HashMap::new();
+    let mut ch : HashMap<String, ChainObjects> = HashMap::new();
+    let mut _evmap : EvMapHandlerAsync<String, ChainObjects> = EvMapHandlerAsync::new();
     let value: serde_json::Value = serde::Deserialize::deserialize(deserializer)?;
     let object = value
     .as_object()
     .ok_or(serde::de::Error::custom("unable to extract data from json file"))?;
+
     for (k, v) in object.iter(){
         match v.as_object(){
             Some(data) => {
@@ -140,13 +168,16 @@ fn value_to_items<'de, D>(deserializer: D) ->
                     (s.to_string(), val.as_i64().unwrap()) // You already must be sure that your data is actually integers
                 }).collect();
                 if let Some(co) = ChainObjects::new(objs){
-                    items.insert(k.to_string(), co);
+                    ch.insert(k.to_string(), co);
                 }
                 
             }
             _ => {}
         }
     }
-    Ok(items)
+    let writer_clone = _evmap.writer.clone();
+    for (k,v) in ch{
+        EvMapHandlerAsync::insert_item(&writer_clone, k, v);
+    }
+    Ok(_evmap)
 }
-

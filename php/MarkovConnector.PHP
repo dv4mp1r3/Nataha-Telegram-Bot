@@ -90,10 +90,3 @@ function convert_data_to_human_read($data){
     }
     return $output;
 }
-$con = new MarkovUNIX("/tmp/sosurity-gen.sock", 5);
-$con->connect();
-//$data = $con->send_data(pack("nvc*", 0x1234, 0x5678, 0x80, 66)); // test for corrupted UTF-8
-$data = $con->send_data("");
-
-print(convert_data_to_human_read($data));
-print("\n");
