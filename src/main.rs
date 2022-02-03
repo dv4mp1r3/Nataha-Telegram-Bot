@@ -2,6 +2,7 @@ mod markov;
 mod network_service;
 use std::io::BufRead;
 mod evmap_wrapper;
+mod markov_async;
 
 use std::fs;
 //use std::time::{Duration, Instant};
@@ -66,4 +67,3 @@ fn addr_in_use(socket_path : &String) {
         }
     }
 }
-

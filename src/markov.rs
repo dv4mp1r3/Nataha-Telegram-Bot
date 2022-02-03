@@ -16,6 +16,7 @@ use std::sync::Arc;
 use crate::evmap_wrapper::EvMapHandlerAsync;
 
 
+
 #[derive(Deserialize)]
 pub struct WordChain{
     #[serde(deserialize_with="value_to_items")]
@@ -46,10 +47,10 @@ impl WordChain{
         self.keys.choose(&mut self.rng_thread).unwrap().to_string()
     } 
 
-    pub async fn _train(&mut self, text : String){
-        println!("Training : {}", text);
-        tokio::time::sleep(tokio::time::Duration::from_millis(200)).await;
+    pub fn _train(text : String, ch: EvMapHandlerAsync<std::string::String, ChainObjects>){
+        println!("Training: {}", text);
     }
+
     pub fn generate_answer(&mut self, income_text : &str) -> Result<String, Box<dyn std::error::Error>>{
         let mut answer : String = "".to_string();
         let cloned = self.chain.reader.clone();
@@ -145,6 +146,12 @@ impl ChainObjects{
     pub fn get_random_sample_by_weight(&self, thread_rng : &mut StdRng) -> String{
         let unknown = self.weights.sample(thread_rng);
         let item = &self.items[unknown].0;
+        item.to_owned()
+    }
+
+    pub fn get_random_sample_by_weight_async(item : &ChainObjects,thread_rng : &mut StdRng) -> String{
+        let unknown = item.weights.sample(thread_rng);
+        let item = &item.items[unknown].0;
         item.to_owned()
     }
 
