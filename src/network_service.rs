@@ -6,6 +6,7 @@ use std::io;
 
 use std::str;
 use std::sync::{Arc, Mutex};
+use std::vec;
 use crate::markov_async::MarkovAsync;
 //use std::time::{Duration, Instant};
 pub struct UnixSocketHandler{
@@ -26,7 +27,7 @@ impl UnixSocketHandler{
             match self.unix_listener.accept().await {
                 Ok((stream, _addr)) => {
                     let reader = chain.chain.reader.clone();
-                    let vec_keys = keys.clone();
+                    let vec_keys = keys.clone(); // Blocking?
                     tokio::spawn(async move {
                         //MarkovAsync::get_item(reader, "abcd", rng_clone).unwrap();
                         loop{
@@ -40,12 +41,11 @@ impl UnixSocketHandler{
                                     msg.truncate(n);
                                     let response;
                                     if let Ok(input_text) = str::from_utf8(&msg){
-                                        response = MarkovAsync::generate_answer(vec_keys.clone(), reader.clone(), input_text).unwrap();
+                                        response = MarkovAsync::generate_answer(&vec_keys, &reader.clone(), input_text).unwrap();
                                     }else{
                                         let rng_thread = SeedableRng::from_entropy();
-                                        let locked_keys = vec_keys.lock().unwrap().clone();
-                                        let rword = MarkovAsync::get_random_init_word(locked_keys.clone(),rng_thread);
-                                        response = MarkovAsync::generate_answer(vec_keys.clone(), reader.clone(),rword.as_str()).unwrap();
+                                        let rword = MarkovAsync::get_random_init_word(&vec_keys, rng_thread);
+                                        response = MarkovAsync::generate_answer(&vec_keys,&reader.clone(),rword.as_str()).unwrap();
                                     }
                                     match stream.try_write(&response.as_str().as_bytes()){
                                         Ok(_x) => {

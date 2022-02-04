@@ -8,8 +8,8 @@ use std::fs;
 //use std::time::{Duration, Instant};
 #[tokio::main]
 async fn main(){
-
-    let data_path = std::env::args().nth(2).unwrap_or("/home/john/Coding/Rust/Data/data_small.json".to_string());
+    println!("Started..");
+    let data_path = std::env::args().nth(2).unwrap_or("/home/john/Coding/Rust/Data/data_fixed.json".to_string());
     let socket_path = std::env::args().nth(1).unwrap_or("/tmp/sosurity-gen.sock".to_string());
 
     if let Ok(_) = fs::metadata(&socket_path){
