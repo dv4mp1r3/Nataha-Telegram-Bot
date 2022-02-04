@@ -1,5 +1,5 @@
 **TODO:**
 
-- Solve async blocker issue
+- ~~Solve async blocker issue~~
 - Fix lifetimes
 - Remove legacy code
