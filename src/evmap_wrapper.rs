@@ -34,21 +34,6 @@ impl <'a, K : Eq + std::hash::Hash + Clone,V: Eq  + std::hash::Hash + evmap::Sha
     pub fn get_item<'b>(clone: &'a ReadHandle<K, V>, key : &'b K) -> Option<evmap::ReadGuard<'a, V>>{
         clone.get_one(key)
     }
-    /// Get all items
-    /// 
-    /// Will clone items tho, be careful
-    /// 
-    /// Will block thread tho
-    pub fn get_all_items<'b>(clone: &'a ReadHandle<K, V>) -> Option<Vec<(K,V)>>{
-        //let mut items : Vec<(K,V)> = clone.map_into(|&k, vs|(k,vs));
-        let mut items : Vec<(K,V)> = vec![];
-        if items.len() == 0{
-            None
-        }else{
-            Some(items)
-        }
-
-    }
 
     pub fn keys(clone : &ReadHandle<K,V>) -> Vec<K>{
         let mut items : Vec<K> = vec![];

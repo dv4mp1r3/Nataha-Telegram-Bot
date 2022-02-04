@@ -5,7 +5,7 @@ mod evmap_wrapper;
 mod markov_async;
 
 use std::fs;
-//use std::time::{Duration, Instant};
+
 #[tokio::main]
 async fn main(){
     println!("Started..");
@@ -36,15 +36,6 @@ async fn main(){
 
 
 }
-/* 
-fn bench(wc : &mut markov::WordChain, number: i64){
-    let mut i = 0;
-    while i < number{
-        wc.generate_answer("benchmark").unwrap();
-        i = i + 1;
-    }
-}
-*/
 fn addr_in_use(socket_path : &String) {
 
     println!("OS returned that {} is in use, I can try to delete it if you want", &socket_path);

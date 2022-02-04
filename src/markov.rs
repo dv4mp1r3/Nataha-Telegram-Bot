@@ -3,7 +3,6 @@ use std::fs::File;
 use std::hash::Hash;
 use std::io::BufReader;
 use evmap_derive::ShallowCopy;
-use rand::prelude::SliceRandom;
 use serde::Deserialize;
 use serde::de::Deserializer;
 
@@ -42,60 +41,6 @@ impl WordChain{
         }else{
             Ok(val)
         }
-    }
-    pub fn get_random_init_word(&mut self) -> String{
-        self.keys.choose(&mut self.rng_thread).unwrap().to_string()
-    } 
-
-    pub fn _train(text : String, ch: EvMapHandlerAsync<std::string::String, ChainObjects>){
-        println!("Training: {}", text);
-    }
-
-    pub fn generate_answer(&mut self, income_text : &str) -> Result<String, Box<dyn std::error::Error>>{
-        let mut answer : String = "".to_string();
-        let cloned = self.chain.reader.clone();
-        
-        match EvMapHandlerAsync::get_item(&cloned, &income_text.to_string()){
-            Some(x) => {
-                let str = x.get_random_sample_by_weight(&mut self.rng_thread);
-                answer.push_str(&str);
-                answer.push_str(" ");
-            }
-            None => {
-                answer.push_str(&self.get_random_init_word());
-                answer.push_str(" ");
-            }
-        }
-        while answer.len() < 300{
-            answer.push_str(&self.continue_sentence(&answer));
-            answer.push_str(" ");
-        }
-
-        Ok(answer)
-    }
-
-    pub fn continue_sentence(&mut self, sentence : &str) -> String{
-        let words = sentence.split_whitespace().collect::<Vec<&str>>();
-        let lword = words.last();
-        let cloned = self.chain.reader.clone();
-        match lword{
-            Some(last_word) => {
-                match EvMapHandlerAsync::get_item(&cloned, &last_word.to_string()){
-                    Some(x) => {
-                        let str = x.get_random_sample_by_weight(&mut self.rng_thread);
-                        str
-                    }
-                    None => {
-                        self.get_random_init_word()
-                    }
-                }
-            }
-            None => {
-                self.get_random_init_word()
-            }
-        }
-
-
     }
 }
 #[derive(Debug, ShallowCopy)]
@@ -143,11 +88,6 @@ impl ChainObjects{
 
     }
 
-    pub fn get_random_sample_by_weight(&self, thread_rng : &mut StdRng) -> String{
-        let unknown = self.weights.sample(thread_rng);
-        let item = &self.items[unknown].0;
-        item.to_owned()
-    }
 
     pub fn get_random_sample_by_weight_async(item : &ChainObjects,thread_rng : &mut StdRng) -> String{
         let unknown = item.weights.sample(thread_rng);
