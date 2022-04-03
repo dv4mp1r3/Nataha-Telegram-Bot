@@ -5,6 +5,7 @@ namespace Misc;
 
 
 use Panda\Yandex\SpeechKitSdk\Cloud;
+use Panda\Yandex\SpeechKitSdk\Exception\ClientException;
 
 class YaCloud extends Cloud
 {
@@ -29,7 +30,7 @@ class YaCloud extends Cloud
         }
 
         if ($response === false) {
-            throw new Exception\ClientException(curl_error($ch));
+            throw new ClientException(curl_error($ch));
         }
 
         curl_close($ch);
