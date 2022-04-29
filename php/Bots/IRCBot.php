@@ -13,6 +13,8 @@ namespace Bots;
  */
 abstract class IRCBot extends SocketBot{
 
+    const MAX_RECONNECT_COUNT = 5;
+
     /**
      * @var string
      */
@@ -29,6 +31,8 @@ abstract class IRCBot extends SocketBot{
     protected array $channels;
 
     protected int $timeoutMicro = 10000;
+
+    private int $currentRecTry = 0;
 
     /**
      * IRCBot constructor.
@@ -76,12 +80,31 @@ abstract class IRCBot extends SocketBot{
         }
     }
 
+    protected function tryReceiveString() : ?string {
+        try {
+            return $this->receiveString(2048, MSG_DONTWAIT);
+        }
+        catch (\Exception $e) {
+            $this->closeConnection();
+            $this->execute();
+            usleep($this->timeoutMicro);
+            return null;
+        }
+    }
+
     protected function do() : void
     {
         $buffer	= '';
         while(true)
         {
-            $out = $this->receiveString(2048, MSG_DONTWAIT);
+            $out = $this->tryReceiveString();
+            if ($out === null) {
+                $this->currentRecTry++;
+                continue;
+            }
+            if ($this->currentRecTry >= IRCBot::MAX_RECONNECT_COUNT) {
+                break;
+            }
             if (mb_strlen($out) > 0) {
                 echo "$out\n";
                 $buffer .= $out;
@@ -94,6 +117,7 @@ abstract class IRCBot extends SocketBot{
                     $buffer = substr($buffer, $pos+1);
                 }
             }
+            $this->currentRecTry = 0;
             usleep($this->timeoutMicro);
         }
     }
