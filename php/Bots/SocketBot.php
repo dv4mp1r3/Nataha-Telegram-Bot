@@ -92,18 +92,18 @@ class SocketBot implements IBot
     /**
      * @param string $function
      * @param int $returnValue
+     * @param int $lastError
      */
-    protected function debugPrintSocketError(string $function, int $returnValue)
+    protected function debugPrintSocketError(string $function, int $returnValue, int $lastError)
     {
         if (defined('IS_DEBUG') && IS_DEBUG)
         {
-            $tmp = socket_last_error($this->s);
-            $ts = socket_strerror($tmp);
-            if($tmp === SOCKET_EAGAIN)
+            $ts = socket_strerror($lastError);
+            if($lastError === SOCKET_EAGAIN)
             {
                 return;
             }
-            echo "{$function}: {$ts} ($tmp)\n";
+            echo "{$function}: {$ts} ($lastError)\n";
             if ($returnValue)
             {
                 echo "return value $returnValue\n";
@@ -135,7 +135,11 @@ class SocketBot implements IBot
     {
         $buffer = '';
         $i = socket_recv($this->s, $buffer, $len, $type);
-        $this->debugPrintSocketError(__FUNCTION__, (int)$i);
+        $lastError = socket_last_error($this->s);
+        $this->debugPrintSocketError(__FUNCTION__, (int)$i, $lastError);
+        if ($lastError > 0) {
+            throw new Exception("socket_recv error ".socket_strerror($lastError)." ($lastError)");
+        }
         if ($i === 0 || !$i)
         {
             return '';
