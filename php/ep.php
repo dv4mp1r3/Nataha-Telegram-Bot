@@ -3,12 +3,12 @@
 declare(strict_types=1);
 
 use Bots\TelegramNeVsratoslavBot;
-use Commands\CommandListener;
+use pbot\Commands\CommandListener;
 use Commands\HashIdCommand;
-use Misc\Application;
-use Misc\Logger;
-use Misc\Input\FileReader;
-use Misc\Input\PhpInputReader;
+use pbot\Misc\Application;
+use pbot\Misc\Logger;
+use pbot\Misc\Input\FileReader;
+use pbot\Misc\Input\PhpInputReader;
 
 require_once './config.php';
 require_once './vendor/autoload.php';

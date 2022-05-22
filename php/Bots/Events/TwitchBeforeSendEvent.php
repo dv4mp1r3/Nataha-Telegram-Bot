@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Bots\Events;
 
+use pbot\Bots\Events\IEvent;
 use Misc\YaCloud;
 use Panda\Yandex\SpeechKitSdk\Emotion;
 use Panda\Yandex\SpeechKitSdk\Lang;

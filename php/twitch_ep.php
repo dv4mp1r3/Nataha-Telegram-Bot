@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
-use Misc\Logger;
-use Misc\Application;
+use pbot\Misc\Logger;
+use pbot\Misc\Application;
+use pbot\Bots\SocketBot;
+use Bots\Events\TwitchBeforeSendEvent;
 use Bots\TwitchSecurityExpertBot;
 
 require_once './config.php';
@@ -20,8 +22,8 @@ $bot = new TwitchSecurityExpertBot(
 );
 if (intval(getenv('USE_DISCORD')) === 1) {
     $bot->setEvent(
-    \Bots\SocketBot::BEFORE_SEND_EVENT,
-    new \Bots\Events\TwitchBeforeSendEvent(
+    SocketBot::BEFORE_SEND_EVENT,
+    new TwitchBeforeSendEvent(
         "http://node:3000/audio",
         getenv('YA_CLOUD_TOKEN'),
         getenv('YA_CLOUD_FOLDER'))

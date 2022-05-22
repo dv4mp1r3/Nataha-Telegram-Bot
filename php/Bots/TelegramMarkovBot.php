@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Bots;
 
-use Commands\CommandListener;
-use Misc\Input\IReader;
+use pbot\Commands\CommandListener;
+use pbot\Misc\Input\IReader;
+use pbot\Bots\TelegramBot;
 use Misc\MarkovChains;
 
 class TelegramMarkovBot extends TelegramBot

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "331bdf228139de7727644d935f84e01c",
+    "content-hash": "9cd4469eb75fa3a71cc99c49e34c926f",
     "packages": [
         {
             "name": "dg/twitter-php",
@@ -58,6 +58,55 @@
             "time": "2020-05-11T22:48:42+00:00"
         },
         {
+            "name": "dv4mp1r3/pbot",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/dv4mp1r3/pbot.git",
+                "reference": "39c6b5f9bf4383f983f8301eb144422404a12d8b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/dv4mp1r3/pbot/zipball/39c6b5f9bf4383f983f8301eb144422404a12d8b",
+                "reference": "39c6b5f9bf4383f983f8301eb144422404a12d8b",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-gd": "*",
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "ext-pcntl": "*",
+                "ext-posix": "*",
+                "ext-sockets": "*"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "pbot\\Bots\\": "Bots/",
+                    "pbot\\Misc\\": "Misc",
+                    "pbot\\Commands\\": "Commands/",
+                    "pbot\\ResourceParsers\\": "ResourceParsers/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "email": "yes@no.maybe"
+                }
+            ],
+            "description": "Набор классов для реализации ботов",
+            "support": {
+                "issues": "https://github.com/dv4mp1r3/pbot/issues",
+                "source": "https://github.com/dv4mp1r3/pbot/tree/main"
+            },
+            "time": "2022-05-22T19:39:38+00:00"
+        },
+        {
             "name": "itpanda-llc/yandex-speechkit-sdk",
             "version": "dev-master",
             "source": {
@@ -107,7 +156,8 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "itpanda-llc/yandex-speechkit-sdk": 20
+        "itpanda-llc/yandex-speechkit-sdk": 20,
+        "dv4mp1r3/pbot": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
