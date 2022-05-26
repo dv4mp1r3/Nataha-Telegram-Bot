@@ -22,9 +22,9 @@ $logger = new Logger();
 try{
     (new Application(
         (new TelegramNeVsratoslavBot(
+            $reader,
             (new CommandListener())
-                ->addCommand('/hashid', new HashIdCommand()),
-            $reader
+                ->addCommand('/hashid', new HashIdCommand())
         ))->setFontPath(__DIR__.'/lobster.ttf')
             ->setMemeTextQuery(PDO_MEME_QUERY)
             ->setMemTextPdo($db),
