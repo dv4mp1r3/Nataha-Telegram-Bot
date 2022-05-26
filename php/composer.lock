@@ -63,12 +63,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/dv4mp1r3/pbot.git",
-                "reference": "39c6b5f9bf4383f983f8301eb144422404a12d8b"
+                "reference": "460a00555b285eb6e790762de26d663086c8f8b5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dv4mp1r3/pbot/zipball/39c6b5f9bf4383f983f8301eb144422404a12d8b",
-                "reference": "39c6b5f9bf4383f983f8301eb144422404a12d8b",
+                "url": "https://api.github.com/repos/dv4mp1r3/pbot/zipball/460a00555b285eb6e790762de26d663086c8f8b5",
+                "reference": "460a00555b285eb6e790762de26d663086c8f8b5",
                 "shasum": ""
             },
             "require": {
@@ -80,12 +80,16 @@
                 "ext-posix": "*",
                 "ext-sockets": "*"
             },
+            "require-dev": {
+                "phpunit/phpunit": "^9.5"
+            },
             "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
                     "pbot\\Bots\\": "Bots/",
                     "pbot\\Misc\\": "Misc",
+                    "pbot\\tests\\": "tests",
                     "pbot\\Commands\\": "Commands/",
                     "pbot\\ResourceParsers\\": "ResourceParsers/"
                 }
@@ -104,7 +108,7 @@
                 "issues": "https://github.com/dv4mp1r3/pbot/issues",
                 "source": "https://github.com/dv4mp1r3/pbot/tree/main"
             },
-            "time": "2022-05-22T19:39:38+00:00"
+            "time": "2022-05-26T20:44:30+00:00"
         },
         {
             "name": "itpanda-llc/yandex-speechkit-sdk",
