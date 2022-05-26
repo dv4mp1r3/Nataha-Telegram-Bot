@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Bots;
 
-use Bots\Events\IEvent;
-use Bots\Events\TwitchBeforeSendEvent;
+use pbot\Bots\Events\IEvent;
+use pbot\Bots\Events\TwitchBeforeSendEvent;
+use pbot\Bots\IRCBot;
 use Misc\MarkovChains;
 use Misc\SecurityExpert;
 

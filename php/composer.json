@@ -16,7 +16,8 @@
     "ext-posix": "*",
     "ext-pcntl": "*",
     "ext-gd": "*",
-    "ext-mbstring": "*"
+    "ext-mbstring": "*",
+    "dv4mp1r3/pbot": "dev-main"
   },
   "autoload": {
     "psr-4": {

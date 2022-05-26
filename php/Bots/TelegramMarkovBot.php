@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Bots;
 
-use Commands\CommandListener;
-use Misc\Input\IReader;
+use pbot\Commands\CommandListener;
+use pbot\Misc\Input\IReader;
+use pbot\Bots\TelegramBot;
 use Misc\MarkovChains;
 
 class TelegramMarkovBot extends TelegramBot
@@ -23,13 +24,13 @@ class TelegramMarkovBot extends TelegramBot
 
     /**
      * TelegramMarkovBot constructor.
-     * @param CommandListener $listener
      * @param IReader $reader
+     * @param CommandListener|null $listener
      * @throws \Exception
      */
-    public function __construct(CommandListener $listener, IReader $reader)
+    public function __construct(IReader $reader, CommandListener $listener = null)
     {
-        parent::__construct($listener, $reader);
+        parent::__construct($reader, $listener);
         $this->markov = new MarkovChains(CONFIG_PATH);
     }
 
