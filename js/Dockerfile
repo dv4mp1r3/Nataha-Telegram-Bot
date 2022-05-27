@@ -1,4 +1,4 @@
-FROM node:lts-alpine3.12 as node_assets
+FROM node:18-alpine3.14 as node_assets
 
 RUN mkdir -p /home/node/app
 WORKDIR /home/node/app
