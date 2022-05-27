@@ -34,4 +34,4 @@ services:
     user: "node"
     ports:
     - "9229:9229"
-    entrypoint: ["node", "--inspect-brk=0.0.0.0", "/home/node/app/discord.js"]
+    #entrypoint: ["node", "--inspect",  "--inspect-brk=0.0.0.0", "/home/node/app/discord.js"]
