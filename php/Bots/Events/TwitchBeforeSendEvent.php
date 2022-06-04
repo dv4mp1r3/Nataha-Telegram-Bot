@@ -4,18 +4,19 @@ declare(strict_types=1);
 
 namespace Bots\Events;
 
-use Panda\Yandex\SpeechKitSDK\Cloud;
-use Panda\Yandex\SpeechKitSDK\Emotion;
-use Panda\Yandex\SpeechKitSDK\Lang;
-use Panda\Yandex\SpeechKitSDK\Ru;
-use Panda\Yandex\SpeechKitSDK\Speech;
+use pbot\Bots\Events\IEvent;
+use Misc\YaCloud;
+use Panda\Yandex\SpeechKitSdk\Emotion;
+use Panda\Yandex\SpeechKitSdk\Lang;
+use Panda\Yandex\SpeechKitSdk\Voice\Ru;
+use Panda\Yandex\SpeechKitSdk\Synthesize;
 
 class TwitchBeforeSendEvent implements IEvent
 {
     /**
-     * @var Cloud
+     * @var YaCloud
      */
-    protected Cloud $cloud;
+    protected YaCloud $cloud;
 
     /**
      * @var string
@@ -38,7 +39,7 @@ class TwitchBeforeSendEvent implements IEvent
         try
         {
             $this->nodeUrl = $nodeUrl;
-            $this->cloud = new Cloud($token, $folder);
+            $this->cloud = new YaCloud($token, $folder);
         }
         catch (ClientException $e)
         {
@@ -62,10 +63,10 @@ class TwitchBeforeSendEvent implements IEvent
      */
     protected function saveMessageAsVoice(string $str) : string
     {
-        $speech = new Speech($str);
+        $speech = new Synthesize($str);
         $speech->setVoice(Ru::OMAZH)
             ->setEmotion(Emotion::EVIL)
-            ->setLang(Lang::RU);
+            ->setLang(Lang::RU_RU);
         $media = $this->cloud->request($speech);
         $maybeError = json_decode($media, true);
         if (json_last_error() === JSON_ERROR_NONE

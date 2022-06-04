@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7048be7484ef611953649bc8d4c0c491",
+    "content-hash": "9cd4469eb75fa3a71cc99c49e34c926f",
     "packages": [
         {
             "name": "dg/twitter-php",
@@ -58,28 +58,83 @@
             "time": "2020-05-11T22:48:42+00:00"
         },
         {
-            "name": "itpanda-llc/yandex-speechkit-php-sdk",
-            "version": "dev-master",
+            "name": "dv4mp1r3/pbot",
+            "version": "dev-main",
             "source": {
                 "type": "git",
-                "url": "https://github.com/itpanda-llc/yandex-speechkit-php-sdk.git",
-                "reference": "60ceb4e13765425886a7f7d2f0acf230d30990e4"
+                "url": "https://github.com/dv4mp1r3/pbot.git",
+                "reference": "460a00555b285eb6e790762de26d663086c8f8b5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/itpanda-llc/yandex-speechkit-php-sdk/zipball/60ceb4e13765425886a7f7d2f0acf230d30990e4",
-                "reference": "60ceb4e13765425886a7f7d2f0acf230d30990e4",
+                "url": "https://api.github.com/repos/dv4mp1r3/pbot/zipball/460a00555b285eb6e790762de26d663086c8f8b5",
+                "reference": "460a00555b285eb6e790762de26d663086c8f8b5",
                 "shasum": ""
             },
             "require": {
                 "ext-curl": "*",
-                "ext-json": "*"
+                "ext-gd": "*",
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "ext-pcntl": "*",
+                "ext-posix": "*",
+                "ext-sockets": "*"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.5"
             },
             "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "Panda\\Yandex\\SpeechKitSDK\\": "src"
+                    "pbot\\Bots\\": "Bots/",
+                    "pbot\\Misc\\": "Misc",
+                    "pbot\\tests\\": "tests",
+                    "pbot\\Commands\\": "Commands/",
+                    "pbot\\ResourceParsers\\": "ResourceParsers/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "email": "yes@no.maybe"
+                }
+            ],
+            "description": "Набор классов для реализации ботов",
+            "support": {
+                "issues": "https://github.com/dv4mp1r3/pbot/issues",
+                "source": "https://github.com/dv4mp1r3/pbot/tree/main"
+            },
+            "time": "2022-05-26T20:44:30+00:00"
+        },
+        {
+            "name": "itpanda-llc/yandex-speechkit-sdk",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/itpanda-llc/yandex-speechkit-sdk.git",
+                "reference": "f6982958a74d7da761d826017eeabd86b84d9d5c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/itpanda-llc/yandex-speechkit-sdk/zipball/f6982958a74d7da761d826017eeabd86b84d9d5c",
+                "reference": "f6982958a74d7da761d826017eeabd86b84d9d5c",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "php": ">=7.2"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Panda\\Yandex\\SpeechKitSdk\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -89,29 +144,24 @@
             "authors": [
                 {
                     "name": "itpanda-llc",
-                    "homepage": "https://github.com/itpanda-llc",
-                    "role": "developer"
+                    "homepage": "https://github.com/itpanda-llc"
                 }
             ],
-            "description": "Library for integration with the speech technology service Yandex SpeechKit",
-            "homepage": "https://github.com/itpanda-llc/yandex-speechkit-php-sdk",
-            "keywords": [
-                "Panda",
-                "speechkit",
-                "yandex"
-            ],
+            "description": "Library for integration with the Yandex SpeechKit speech technology service",
+            "homepage": "https://github.com/itpanda-llc/yandex-speechkit-sdk",
             "support": {
-                "issues": "https://github.com/itpanda-llc/yandex-speechkit-php-sdk/issues",
-                "source": "https://github.com/itpanda-llc/yandex-speechkit-php-sdk/tree/master"
+                "issues": "https://github.com/itpanda-llc/yandex-speechkit-sdk/issues",
+                "source": "https://github.com/itpanda-llc/yandex-speechkit-sdk/tree/master"
             },
-            "time": "2020-06-17T03:34:56+00:00"
+            "time": "2021-05-16T05:49:45+00:00"
         }
     ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "itpanda-llc/yandex-speechkit-php-sdk": 20
+        "itpanda-llc/yandex-speechkit-sdk": 20,
+        "dv4mp1r3/pbot": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
