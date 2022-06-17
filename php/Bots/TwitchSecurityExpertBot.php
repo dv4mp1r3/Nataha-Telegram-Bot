@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace Bots;
 
-use pbot\Bots\Events\IEvent;
-use pbot\Bots\Events\TwitchBeforeSendEvent;
 use pbot\Bots\IRCBot;
 use Misc\MarkovChains;
 use Misc\SecurityExpert;
+use Bots\Events\TwitchBeforeSendEvent;
 
 class TwitchSecurityExpertBot extends IRCBot
 {
@@ -64,13 +63,12 @@ class TwitchSecurityExpertBot extends IRCBot
                 }
             }
             $str = "PRIVMSG #".$this->channels[0].' :'.$genText."\r\n";
-            /**
-             * @var TwitchBeforeSendEvent $beforeStartEvent
-             */
-            if ($this->beforeSendEvent instanceof IEvent) {
-                $beforeStartEvent = $this->beforeSendEvent;
-                $beforeStartEvent->setEventData($genText);
+            foreach ($this->beforeSendEvents as $event) {
+                if ($event instanceof TwitchBeforeSendEvent) {
+                    $event->setEventData($genText);
+                }
             }
+
             $this->sendString($str, true);
         }
         if($this->sExpert->isHaha($lowerMessage))
