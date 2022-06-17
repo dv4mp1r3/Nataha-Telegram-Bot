@@ -63,12 +63,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/dv4mp1r3/pbot.git",
-                "reference": "460a00555b285eb6e790762de26d663086c8f8b5"
+                "reference": "c3eddfac9ba48e938801f974163f624a7d41be22"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dv4mp1r3/pbot/zipball/460a00555b285eb6e790762de26d663086c8f8b5",
-                "reference": "460a00555b285eb6e790762de26d663086c8f8b5",
+                "url": "https://api.github.com/repos/dv4mp1r3/pbot/zipball/c3eddfac9ba48e938801f974163f624a7d41be22",
+                "reference": "c3eddfac9ba48e938801f974163f624a7d41be22",
                 "shasum": ""
             },
             "require": {
@@ -108,7 +108,7 @@
                 "issues": "https://github.com/dv4mp1r3/pbot/issues",
                 "source": "https://github.com/dv4mp1r3/pbot/tree/main"
             },
-            "time": "2022-05-26T20:44:30+00:00"
+            "time": "2022-06-17T19:52:14+00:00"
         },
         {
             "name": "itpanda-llc/yandex-speechkit-sdk",
