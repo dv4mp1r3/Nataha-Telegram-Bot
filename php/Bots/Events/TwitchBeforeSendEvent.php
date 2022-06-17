@@ -11,7 +11,7 @@ use Panda\Yandex\SpeechKitSdk\Lang;
 use Panda\Yandex\SpeechKitSdk\Voice\Ru;
 use Panda\Yandex\SpeechKitSdk\Synthesize;
 
-class TwitchBeforeSendEvent implements IEvent
+class TwitchBeforeSendEvent extends BaseBeforeSendEvent
 {
     /**
      * @var YaCloud
@@ -22,11 +22,6 @@ class TwitchBeforeSendEvent implements IEvent
      * @var string
      */
     protected string $nodeUrl;
-
-    /**
-     * @var string
-     */
-    protected string $eventData;
 
     /**
      * TwitchBeforeSendEvent constructor.
@@ -46,14 +41,6 @@ class TwitchBeforeSendEvent implements IEvent
             echo $e->getMessage();
             echo PHP_EOL;
         }
-    }
-
-    /**
-     * @param string $data
-     */
-    public function setEventData(string $data)
-    {
-        $this->eventData = $data;
     }
 
     /**

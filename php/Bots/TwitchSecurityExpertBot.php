@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Bots;
 
+use pbot\Bots\Events\IEvent;
 use pbot\Bots\IRCBot;
 use Misc\MarkovChains;
 use Misc\SecurityExpert;
@@ -68,8 +69,15 @@ class TwitchSecurityExpertBot extends IRCBot
                     $event->setEventData($genText);
                 }
             }
+            foreach ($this->afterSendEvents as $event) {
+                if ($event instanceof IEvent) {
+                    $event->setEventData($genText);
+                }
+            }
 
             $this->sendString($str, true);
+
+
         }
         if($this->sExpert->isHaha($lowerMessage))
         {
