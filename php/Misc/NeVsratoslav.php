@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Misc;
 
+use Bots\Exception;
+
 /**
  * Жалкая копия https://t.me/vsratoslavbot, но у которой нормальная отрисовка поверх белого фона
  * Class TelegramNeVsratoslavBot
@@ -12,6 +14,9 @@ namespace Misc;
 class NeVsratoslav extends SecurityExpert
 {
 
+    /**
+     * @var \GdImage|resource
+     */
     protected $image;
 
     private int $fontSize;
@@ -63,12 +68,12 @@ class NeVsratoslav extends SecurityExpert
      */
     private function loadImage(string $imageBytes): void
     {
-        $image = imagecreatefromstring($imageBytes);
-        if (is_resource($image)) {
-            $this->image = $image;
+        $img = imagecreatefromstring($imageBytes);
+        if (is_resource($img)) {
+            $this->image = $img;
             return;
         }
-        throw new \Exception("Can't load image from string");
+        throw new Exception("Can't load image from string");
     }
 
     /**

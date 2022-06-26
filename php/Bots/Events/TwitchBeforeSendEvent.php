@@ -10,6 +10,7 @@ use Panda\Yandex\SpeechKitSdk\Emotion;
 use Panda\Yandex\SpeechKitSdk\Lang;
 use Panda\Yandex\SpeechKitSdk\Voice\Ru;
 use Panda\Yandex\SpeechKitSdk\Synthesize;
+use Bots\Exception;
 
 class TwitchBeforeSendEvent implements IEvent
 {
@@ -71,10 +72,13 @@ class TwitchBeforeSendEvent implements IEvent
         $maybeError = json_decode($media, true);
         if (json_last_error() === JSON_ERROR_NONE
             && array_key_exists('error_code', $maybeError)) {
-            throw new \Exception("Speechkit error: {$maybeError['error_code']}");
+            throw new Exception("Speechkit error: {$maybeError['error_code']}");
         }
         $fileName = md5((string)time()).'.ogg';
-        $res = file_put_contents("/tmp/$fileName", $media);
+        $filePath = "/tmp/$fileName";
+        if (!file_put_contents($filePath, $media)) {
+            throw new Exception("Can't write $filePath");
+        }
         return $fileName;
     }
 
@@ -86,12 +90,12 @@ class TwitchBeforeSendEvent implements IEvent
         curl_setopt($ch, CURLOPT_POSTFIELDS, [
             'voice' => new \CurlFile($filePath)
         ]);
-        $output = curl_exec($ch);
+        curl_exec($ch);
         unlink($fileName);
         if (curl_errno($ch) !== CURLE_OK) {
             $error = curl_error($ch);
             curl_close($ch);
-            throw new \Exception(__FUNCTION__ . " error: $error");
+            throw new Exception(__FUNCTION__ . " error: $error");
         }
         curl_close($ch);
     }

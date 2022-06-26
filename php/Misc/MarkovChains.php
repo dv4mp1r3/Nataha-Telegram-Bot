@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Misc;
 
+use Bots\Exception;
+
 class MarkovChains
 {
     const ARRAY_KEY_CHAIN = 'chain';
@@ -85,7 +87,7 @@ class MarkovChains
         $text = [];
         $customTextProcessingFunctionName = 'customTextProcessing';
         if (empty($this->chain)) {
-            throw new \Exception('Bad data format');
+            throw new Exception('Bad data format');
         }
         $out = array_rand($this->chain[self::ARRAY_KEY_CHAIN]); // initial word
         while (true) {
@@ -148,7 +150,7 @@ class MarkovChains
             }
             return is_int($result) && $result > 0;
         } else {
-            throw new \Exception('$putData is false (file_put_contents error)');
+            throw new Exception('$putData is false (file_put_contents error)');
         }
     }
 
@@ -163,7 +165,7 @@ class MarkovChains
         $this->chain = json_decode(file_get_contents($this->filePath), true);
         while (!$this->chain) {
             if ($tryCount === MAX_DB_READ_TRY) {
-                throw new \Exception("Can't get file content for " . $this->filePath);
+                throw new Exception("Can't get file content for " . $this->filePath);
             }
             $tryCount++;
             $this->chain = json_decode(file_get_contents($this->filePath), true);
