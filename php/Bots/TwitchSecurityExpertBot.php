@@ -65,12 +65,14 @@ class TwitchSecurityExpertBot extends IRCBot
             }
             $str = "PRIVMSG #".$this->channels[0].' :'.$genText."\r\n";
             /**
-             * @var TwitchBeforeSendEvent $beforeStartEvent
+             * @var TwitchBeforeSendEvent $event
              */
-            if ($this->beforeSendEvent instanceof IEvent) {
-                $beforeStartEvent = $this->beforeSendEvent;
-                $beforeStartEvent->setEventData($genText);
+            foreach ($this->beforeSendEvents as $event) {
+                if ($event instanceof IEvent) {
+                    $event->setEventData($genText);
+                }
             }
+
             $this->sendString($str, true);
         }
         if($this->sExpert->isHaha($lowerMessage))
