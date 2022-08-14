@@ -28,7 +28,7 @@ client.on('messageCreate', async message => {
     if (!message.guild) return;
     if (message.content === '/join') {
         if (message.member.voice.channel) {
-            const connection = joinVoiceChannel({
+            joinVoiceChannel({
                 channelId: message.member.voice.channel.id,
                 guildId: message.guild.id,
                 selfDeaf: false,
