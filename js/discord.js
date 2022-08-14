@@ -44,7 +44,7 @@ client.on('messageCreate', async message => {
                         const resource = createAudioResource(fs.createReadStream(soundFilePath));
                         opusPlayer.play(resource);
                     }catch (e) {console.log(e);}
-                    fs.unlinkSync(soundFilePath);
+                    //fs.unlinkSync(soundFilePath);
                 });
                 res.send('');
             });
