@@ -70,18 +70,23 @@ class TelegramNeVsratoslavBot extends TelegramSecurityExpertBot
             count($message['message']['reply_to_message']['photo']) > 0;
     }
 
+    private function isNoNeedToExecute(): bool {
+        if ($this->isCommandAlreadyExecuted) {
+            return true;
+        }
+        if ($this->chatId != ID_CREATOR && $this->chatId != ID_CHAT) {
+            $this->sendMessage($this->chatId, SecurityExpert::MESSAGE_GET_OFF);
+            return true;
+        }
+        return false;
+    }
+
     public function execute(): void
     {
-        if ($this->isCommandAlreadyExecuted) {
+        if ($this->isNoNeedToExecute()) {
             return;
         }
         $nvsrt = new NeVsratoslav();
-
-        if ($this->chatId != ID_CREATOR && $this->chatId != ID_CHAT) {
-            $this->sendMessage($this->chatId, SecurityExpert::MESSAGE_GET_OFF);
-            return;
-        }
-
         $lowerRawText = mb_strtolower($this->rawText);
         if ($this->isImageReply($this->decodedInput) && $nvsrt->isReply($lowerRawText)) {
             $filePath = $this->getFilePath($this->decodedInput['message']['reply_to_message']['photo'][0]['file_id']);
@@ -101,9 +106,9 @@ class TelegramNeVsratoslavBot extends TelegramSecurityExpertBot
                 }
                 $this->sendMessage($this->chatId, $messageText);
             }
-            return;
+        } else {
+            parent::execute();
         }
-        parent::execute();
     }
 
 }

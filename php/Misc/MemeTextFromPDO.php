@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Misc;
 
+use Bots\Exception;
+
 /**
  * хелпер для получения случайных строчек для Misc/TelegramNeVsratoslavBotratoslavBot.php
  * структура таблицы для mysql:
@@ -31,7 +33,7 @@ class MemeTextFromPDO
     {
         $res = $pdo->query($query);
         if (count($res) !== 1) {
-            throw new \Exception('Empty data from ' . __METHOD__);
+            throw new Exception('Empty data from ' . __METHOD__);
         }
         foreach ($res as $row) {
             return $row['text'];
