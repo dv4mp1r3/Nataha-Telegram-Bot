@@ -3,29 +3,20 @@ services:
   php-twitch:
     build:
       context: ./php
-      dockerfile: php74.dockerfile
+      dockerfile: php74.prod.dockerfile
     env_file:
       - configs/vars.env
-    volumes:
-      - ./php:/var/www
-      - ./configs/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
     entrypoint: ["php", "twitch_ep.php"]
   php-telegram:
     build:
       context: ./php
-      dockerfile: php74.dockerfile
+      dockerfile: php74.prod.dockerfile
     env_file:
       - configs/vars.env
-    volumes:
-      - ./php:/var/www
-      - ./configs/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
   nginx:
     image: library/nginx:alpine
     ports:
       - "8001:80"
-    volumes:
-    - ./php:/var/www
-    - ./configs/nginx.conf:/etc/nginx/conf.d/site.conf
     depends_on:
       - php-telegram
     links:
