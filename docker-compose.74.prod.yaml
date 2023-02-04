@@ -2,19 +2,21 @@ version: "3"
 services:
   php-twitch:
     build:
-      context: ./php
+      context: .
       dockerfile: php74.prod.dockerfile
     env_file:
       - configs/vars.env
     entrypoint: ["php", "twitch_ep.php"]
   php-telegram:
     build:
-      context: ./php
+      context: .
       dockerfile: php74.prod.dockerfile
     env_file:
       - configs/vars.env
   nginx:
-    image: library/nginx:alpine
+    build:
+      context: .
+      dockerfile: nginx.prod.dockerfile
     ports:
       - "8001:80"
     depends_on:

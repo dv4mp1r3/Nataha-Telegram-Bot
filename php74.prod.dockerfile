@@ -31,3 +31,16 @@ WORKDIR /var/www
 COPY --from=composer/composer /usr/bin/composer /usr/bin/composer
 
 COPY ./php /var/www
+
+RUN addgroup -S web \
+    && adduser \
+    --disabled-password \
+    --gecos "" \
+    --home /home/web \
+    --ingroup web \
+    --uid "1000" \
+    web \
+    && composer install \
+    && chown -R web:web /var/www
+
+USER web

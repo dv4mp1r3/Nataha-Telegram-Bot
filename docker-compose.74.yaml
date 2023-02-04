@@ -2,7 +2,7 @@ version: "3"
 services:
   php-twitch:
     build:
-      context: ./php
+      context: .
       dockerfile: php74.dockerfile
     env_file:
       - configs/vars.env
@@ -12,7 +12,7 @@ services:
     entrypoint: ["php", "twitch_ep.php"]
   php-telegram:
     build:
-      context: ./php
+      context: .
       dockerfile: php74.dockerfile
     env_file:
       - configs/vars.env
