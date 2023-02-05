@@ -1,24 +1,27 @@
-FROM php:7.4-fpm-alpine as php_74
+FROM php:7.4-fpm-alpine3.12 as php_74
 RUN apk add --no-cache $PHPIZE_DEPS git \
-    && pecl install xdebug redis \
+    && pecl install xdebug-3.1.6 redis \
     && docker-php-ext-enable xdebug redis \
     && docker-php-ext-configure pcntl --enable-pcntl \
     && docker-php-ext-configure sockets --enable-sockets \
-    && docker-php-ext-install pcntl sockets
+    && docker-php-ext-install pcntl sockets mysqli pdo pdo_mysql bcmath
 RUN apk add --no-cache \
       freetype \
+      sqlite \
       libjpeg-turbo \
       libpng \
       freetype-dev \
+      sqlite-dev \
       libjpeg-turbo-dev \
       libpng-dev \
     && docker-php-ext-configure gd \
       --with-freetype=/usr/include/ \
       --with-jpeg=/usr/include/ \
-    && docker-php-ext-install -j$(nproc) gd \
+    && docker-php-ext-install -j$(nproc) gd pdo_sqlite \
     && docker-php-ext-enable gd \
     && apk del --no-cache \
       freetype-dev \
+      sqlite-dev \
       libjpeg-turbo-dev \
       libpng-dev \
     && rm -rf /tmp/*

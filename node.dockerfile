@@ -2,7 +2,8 @@ FROM node:18-alpine3.14 as node_assets
 
 RUN mkdir -p /home/node/app
 WORKDIR /home/node/app
-COPY package.json package.json
+COPY ./js/package.json package.json
+COPY ./js/package-lock.json package-lock.json
 RUN apk --no-cache --virtual build-dependencies add \
     python3 \
     make \

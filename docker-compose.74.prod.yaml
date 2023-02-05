@@ -1,0 +1,31 @@
+version: "3"
+services:
+  php-twitch:
+    build:
+      context: .
+      dockerfile: php74.prod.dockerfile
+    env_file:
+      - configs/vars.env
+    entrypoint: ["php", "twitch_ep.php"]
+  php-telegram:
+    build:
+      context: .
+      dockerfile: php74.prod.dockerfile
+    env_file:
+      - configs/vars.env
+  nginx:
+    build:
+      context: .
+      dockerfile: nginx.prod.dockerfile
+    ports:
+      - "8001:80"
+    depends_on:
+      - php-telegram
+    links:
+      - php-telegram
+  node:
+    build:
+      context: .
+      dockerfile: node.prod.dockerfile
+    env_file:
+      - configs/vars.env
