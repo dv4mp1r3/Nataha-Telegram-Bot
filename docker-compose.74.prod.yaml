@@ -25,16 +25,7 @@ services:
       - php-telegram
   node:
     build:
-      context: ./js
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: node.prod.dockerfile
     env_file:
       - configs/vars.env
-    environment:
-      NODE_ENV: "development"
-    volumes:
-      - ./js:/home/node/app
-    user: "node"
-    ports:
-    - "9229:9229"
-    #entrypoint: ["node", "--inspect",  "--inspect-brk=0.0.0.0", "/home/node/app/discord.js"]
-    #entrypoint: ["npm", "update"]

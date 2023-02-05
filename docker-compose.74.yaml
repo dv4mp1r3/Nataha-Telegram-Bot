@@ -32,12 +32,10 @@ services:
       - php-telegram
   node:
     build:
-      context: ./js
-      dockerfile: Dockerfile
+      context: ./
+      dockerfile: node.dockerfile
     env_file:
       - configs/vars.env
-    environment:
-      NODE_ENV: "development"
     volumes:
       - ./js:/home/node/app
     user: "node"
