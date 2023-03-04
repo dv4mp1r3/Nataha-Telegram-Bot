@@ -3,24 +3,20 @@ services:
   php-telegram:
     build:
       context: ./
-      dockerfile: configs/php74.dockerfile
+      dockerfile: configs/php74.prod.dockerfile
     env_file:
       - configs/vars.env
-    volumes:
-      - ./php:/var/www
-      - ./configs/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
   php-twitch:
     build:
       context: ./
-      dockerfile: configs/php74.dockerfile
+      dockerfile: configs/php74.prod.dockerfile
     env_file:
       - configs/vars.env
-    volumes:
-      - ./php:/var/www
-      - ./configs/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
     entrypoint: ["php", "twitch_ep.php"]
   nginx:
-    image: library/nginx:alpine
+    build:
+      context: ./
+      dockerfile: configs/nginx.prod.dockerfile
     ports:
       - "8001:80"
     volumes:
@@ -28,19 +24,18 @@ services:
     - ./configs/nginx.conf:/etc/nginx/conf.d/site.conf
     depends_on:
       - php-telegram
+    links:
+      - php-telegram
   node:
     build:
       context: ./
-      dockerfile: configs/node.dockerfile
+      dockerfile: configs/node.prod.dockerfile
     env_file:
       - configs/vars.env
     environment:
-      NODE_ENV: "development"
+      NODE_ENV: "production"
     volumes:
       - ./js:/home/node/app
     user: "node"
-    ports:
-    - "9229:9229"
     depends_on:
       - nginx
-    #entrypoint: ["node", "--inspect",  "--inspect-brk=0.0.0.0", "/home/node/app/discord.js"]

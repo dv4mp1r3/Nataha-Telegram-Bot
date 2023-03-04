@@ -1,11 +1,11 @@
 FROM php:7.4-fpm-alpine3.12 as php_74
 RUN apk add --no-cache $PHPIZE_DEPS git \
-    && pecl install xdebug redis \
+    && pecl install xdebug-3.1.6 redis \
     && docker-php-ext-enable xdebug redis \
     && docker-php-ext-configure pcntl --enable-pcntl \
     && docker-php-ext-configure sockets --enable-sockets \
-    && docker-php-ext-install pcntl sockets
-RUN apk add --no-cache \
+    && docker-php-ext-install pcntl sockets \
+    && apk add --no-cache \
       freetype \
       libjpeg-turbo \
       libpng \
