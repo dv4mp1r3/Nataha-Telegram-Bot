@@ -9,7 +9,7 @@ services:
     volumes:
       - ./php:/var/www
       - ./configs/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-    entrypoint: ["php", "twitch_ep.php"]
+    #entrypoint: ["php", "twitch_ep.php"]
   nginx:
     image: library/nginx:alpine
     ports:

@@ -18,7 +18,7 @@ $reader = defined('IS_DEBUG') && IS_DEBUG
     : (new PhpInputReader());
 $db = new \PDO(PDO_MEME_DSN);
 $db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-$logger = new Logger();
+$logger = new \Misc\EchoLogger();
 try{
     (new Application(
         (new TelegramNeVsratoslavBot(
