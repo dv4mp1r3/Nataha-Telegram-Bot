@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Bots\TelegramNeVsratoslavBot;
+use Misc\MemeTextFromPDO;
 use pbot\Commands\CommandListener;
 use Commands\HashIdCommand;
 use pbot\Misc\Application;
@@ -26,8 +27,8 @@ try{
             (new CommandListener())
                 ->addCommand('/hashid', new HashIdCommand())
         ))->setFontPath(__DIR__.'/lobster.ttf')
-            ->setMemeTextQuery(PDO_MEME_QUERY)
-            ->setMemTextPdo($db),
+            ->setMaxWordsCount(intval(getenv('MAX_WORDS_COUNT')))
+            ->setTextGenerator(new MemeTextFromPDO($db, PDO_MEME_QUERY)),
         $logger,
         defined('IS_DEBUG') && IS_DEBUG
     )

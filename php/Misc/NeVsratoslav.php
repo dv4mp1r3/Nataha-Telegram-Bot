@@ -25,15 +25,22 @@ class NeVsratoslav extends SecurityExpert
 
     private int $textY;
 
+    private TextGenerator $generator;
+
+    public function __construct(TextGenerator $tg)
+    {
+        $this->generator = $tg;
+    }
+
     /**
      * @param string $imageBytes прочитанный в строку файл
-     * @param string $text текст который нужно добавить
      * @param string $fontPath полный путь к шрифтам
      * @return string обработанное изображение, готовое к сохранению в файл или передаче
      * @throws \Exception
      */
-    public function addTextToImage(string $imageBytes, string $text, string $fontPath) : string
+    public function addTextToImage(string $imageBytes, string $fontPath) : string
     {
+        $text = $this->generator->genString();
         $this->loadImage($imageBytes);
         $this->calculateTextPosition($text, $fontPath);
         $black = imagecolorallocate($this->image, 0, 0, 0);

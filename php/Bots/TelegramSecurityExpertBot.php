@@ -18,6 +18,13 @@ class TelegramSecurityExpertBot extends TelegramMarkovBot
         //"/php|пых/i" => "CAADAgADEwADmqwRGPffQIaMmNCbAg",
     ];
 
+    private int $maxWordsCount;
+
+    public function setMaxWordsCount(int $mwc): self
+    {
+        $this->maxWordsCount = $mwc;
+    }
+
     public function execute(): void
     {
         parent::execute();
@@ -42,7 +49,7 @@ class TelegramSecurityExpertBot extends TelegramMarkovBot
         }
         else if ($this->isReply($this->decodedInput) || $isSecurityReply)
         {
-            $text = $this->markov->generateText(100);
+            $text = $this->markov->generateText($this->maxWordsCount);
             if (!$text) {
                 $text = SecurityExpert::MESSAGE_LOW_DATA;
             }

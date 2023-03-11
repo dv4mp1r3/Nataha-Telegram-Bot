@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Bots;
 
-use Misc\MemeTextFromPDO;
 use Misc\NeVsratoslav;
 use Misc\SecurityExpert;
+use Misc\TextGenerator;
 
 class TelegramNeVsratoslavBot extends TelegramSecurityExpertBot
 {
@@ -14,9 +14,7 @@ class TelegramNeVsratoslavBot extends TelegramSecurityExpertBot
 
     private string $fontPath;
 
-    private string $mQuery;
-
-    private \PDO $pdo;
+    private TextGenerator $generator;
 
     /**
      * @param string $fontPath
@@ -28,23 +26,9 @@ class TelegramNeVsratoslavBot extends TelegramSecurityExpertBot
         return $this;
     }
 
-    /**
-     * @param string $mQuery
-     * @return $this
-     */
-    public function setMemeTextQuery(string $mQuery): self
+    public function setTextGenerator(TextGenerator $tg): self
     {
-        $this->mQuery = $mQuery;
-        return $this;
-    }
-
-    /**
-     * @param \PDO $pdo
-     * @return $this
-     */
-    public function setMemTextPdo(\PDO $pdo): self
-    {
-        $this->pdo = $pdo;
+        $this->generator = $tg;
         return $this;
     }
 
@@ -86,14 +70,13 @@ class TelegramNeVsratoslavBot extends TelegramSecurityExpertBot
         if ($this->isNoNeedToExecute()) {
             return;
         }
-        $nvsrt = new NeVsratoslav();
+        $nvsrt = new NeVsratoslav($this->generator);
         $lowerRawText = mb_strtolower($this->rawText);
         if ($this->isImageReply($this->decodedInput) && $nvsrt->isReply($lowerRawText)) {
             $filePath = $this->getFilePath($this->decodedInput['message']['reply_to_message']['photo'][0]['file_id']);
             $image = $this->downloadFile($filePath);
             $image = $nvsrt->addTextToImage(
                 $image,
-                MemeTextFromPDO::getRandomString($this->pdo, $this->mQuery),
                 $this->fontPath
             );
             try {
