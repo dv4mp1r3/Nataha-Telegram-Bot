@@ -1,8 +1,5 @@
 FROM library/nginx:alpine as nginx
 
-COPY ./php /var/www
-COPY ./configs/nginx.conf /etc/nginx/conf.d/site.conf
-
 RUN addgroup -S web \
     && adduser \
     --disabled-password \
@@ -12,8 +9,9 @@ RUN addgroup -S web \
     --uid "1000" \
     web \
     && touch /var/run/nginx.pid \
-    && chown -R web:web /var/run/nginx.pid /var/cache/nginx /var/www
+    && chown -R web:web /var/run/nginx.pid /var/cache/nginx
 
-WORKDIR /var/www
+COPY ../php /var/www
+COPY ./configs/nginx.conf /etc/nginx/conf.d/site.conf
 
 USER web
