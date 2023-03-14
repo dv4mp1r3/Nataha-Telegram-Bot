@@ -23,6 +23,7 @@ class TelegramSecurityExpertBot extends TelegramMarkovBot
     public function setMaxWordsCount(int $mwc): self
     {
         $this->maxWordsCount = $mwc;
+        return $this;
     }
 
     public function execute(): void
