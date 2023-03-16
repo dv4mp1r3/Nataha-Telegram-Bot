@@ -4,13 +4,8 @@ RUN apk add --no-cache $PHPIZE_DEPS git \
     && docker-php-ext-enable xdebug redis \
     && docker-php-ext-configure pcntl --enable-pcntl \
     && docker-php-ext-configure sockets --enable-sockets \
-<<<<<<<< HEAD:configs/php74.dockerfile
-    && docker-php-ext-install pcntl sockets \
+    && docker-php-ext-install pcntl sockets mysqli pdo pdo_mysql bcmath \
     && apk add --no-cache \
-========
-    && docker-php-ext-install pcntl sockets mysqli pdo pdo_mysql bcmath
-RUN apk add --no-cache \
->>>>>>>> 1407b20dc89646ef88f32253e567eb60c1384393:php74.dockerfile
       freetype \
       sqlite \
       libjpeg-turbo \
