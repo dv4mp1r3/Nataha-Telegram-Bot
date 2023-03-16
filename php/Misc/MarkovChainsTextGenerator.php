@@ -12,6 +12,7 @@ class MarkovChainsTextGenerator extends MarkovChains implements TextGenerator
     public function __construct(string $filePath, int $maxWordsCount = 5)
     {
         parent::__construct($filePath);
+        $this->loadChainFromFile();
         $this->wordsCount = $maxWordsCount;
     }
 
