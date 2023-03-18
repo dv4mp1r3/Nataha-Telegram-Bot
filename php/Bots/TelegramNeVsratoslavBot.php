@@ -74,7 +74,9 @@ class TelegramNeVsratoslavBot extends TelegramSecurityExpertBot
         $nvsrt = new NeVsratoslav($this->generator);
         $lowerRawText = mb_strtolower($this->rawText);
         if ($this->isImageReply($this->decodedInput) && $nvsrt->isReply($lowerRawText)) {
-            $filePath = $this->getFilePath($this->decodedInput['message']['reply_to_message']['photo'][0]['file_id']);
+            $lastPhotoIndex = count($this->decodedInput['message']['reply_to_message']['photo']) - 1;
+            $lastPhoto = $this->decodedInput['message']['reply_to_message']['photo'][$lastPhotoIndex];
+            $filePath = $this->getFilePath($lastPhoto['file_id']);
             $image = $this->downloadFile($filePath);
             $image = $nvsrt->addTextToImage(
                 $image,
