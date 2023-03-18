@@ -11,7 +11,7 @@ RUN addgroup -S web \
     && touch /var/run/nginx.pid \
     && chown -R web:web /var/run/nginx.pid /var/cache/nginx
 
-COPY ../php /var/www
+COPY ./php /var/www
 COPY ./configs/nginx.conf /etc/nginx/conf.d/site.conf
 
 USER web

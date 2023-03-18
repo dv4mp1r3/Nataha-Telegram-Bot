@@ -27,7 +27,7 @@ FROM php_74 as composer_74
 WORKDIR /var/www
 COPY --from=composer/composer /usr/bin/composer /usr/bin/composer
 
-COPY ../php /var/www
+COPY ./php /var/www
 
 RUN addgroup -S web \
     && adduser \
