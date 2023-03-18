@@ -20,18 +20,30 @@ use Bots\Exception;
  * Class MemeTextTableFromPDO
  * @package Misc
  */
-class MemeTextFromPDO
+class MemeTextFromPDO implements TextGenerator
 {
+
+    private \PDO $pdo;
+
+    private string $query;
 
     /**
      * @param \PDO $pdo инстанс PDO с переданным DSN
      * @param string $query запрос для получения текста из таблицы, который будет выполнен $pdo
-     * @return string результат выполнения запроса $query для инстанса $pdo
-     * @throws \Exception
      */
-    public static function getRandomString(\PDO $pdo, string $query): string
+    public function __construct(\PDO $pdo, string $query)
     {
-        $res = $pdo->query($query);
+        $this->pdo = $pdo;
+        $this->query = $query;
+    }
+
+    /**
+     * @return string
+     * @throws Exception
+     */
+    public function genString(): string
+    {
+        $res = $this->pdo->query($this->query);
         if (count($res) !== 1) {
             throw new Exception('Empty data from ' . __METHOD__);
         }
@@ -39,5 +51,4 @@ class MemeTextFromPDO
             return $row['text'];
         }
     }
-
 }

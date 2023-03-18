@@ -17,6 +17,7 @@ define('FLOCK_SLEEP_INTERVAL', getenv('FLOCK_SLEEP_INTERVAL'));
 define('MAX_DB_READ_TRY', getenv('MAX_DB_READ_TRY'));
 define('ID_CREATOR', getenv('ID_CREATOR'));
 define('ID_CHAT', getenv('ID_CHAT'));
+define('MAX_WORDS_COUNT', getenv('MAX_WORDS_COUNT'));
 define('CONFIG_PATH', __DIR__.'/data.json');
 
 define('TWITCH_DEFAULT_SERVER', getenv('TWITCH_DEFAULT_SERVER'));
