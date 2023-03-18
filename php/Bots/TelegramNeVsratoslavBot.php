@@ -10,6 +10,7 @@ use Misc\TextGenerator;
 
 class TelegramNeVsratoslavBot extends TelegramSecurityExpertBot
 {
+    const PARENT_MAX_WORDS = 100;
     const ERROR_SEND_PHOTO = 'Не удалось загрузить фото';
 
     private string $fontPath;
@@ -90,6 +91,7 @@ class TelegramNeVsratoslavBot extends TelegramSecurityExpertBot
                 $this->sendMessage($this->chatId, $messageText);
             }
         } else {
+            $this->setMaxWordsCount(self::PARENT_MAX_WORDS);
             parent::execute();
         }
     }
