@@ -103,7 +103,7 @@ class TelegramNeVsratoslavBot implements IBot, ParentBot
                 if (defined('IS_DEBUG') && IS_DEBUG) {
                     $messageText .= "\r\n" . $e->getMessage();
                 }
-                $this->getParent()->sendMessage($this->chatId, $messageText);
+                $this->getParent()->sendMessage($this->getParent()->getChatId(), $messageText);
             }
         } else {
             $this->getParent()->setMaxWordsCount(self::PARENT_MAX_WORDS);
