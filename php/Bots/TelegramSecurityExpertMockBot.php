@@ -8,12 +8,12 @@ use pbot\Bots\PbotException;
 
 class TelegramSecurityExpertMockBot extends TelegramSecurityExpertBot
 {
-    protected function getFilePath(string $id): string
+    public function getFilePath(string $id): string
     {
         return getenv('TELEGRAM_MOCK_URL');
     }
 
-    protected function downloadFile(string $filePath): string
+    public function downloadFile(string $filePath): string
     {
         $ch = $this->buildCurlGetTemplate($filePath);
         $image = curl_exec($ch);
@@ -25,7 +25,7 @@ class TelegramSecurityExpertMockBot extends TelegramSecurityExpertBot
         return $image;
     }
 
-    protected function sendPhoto(int $chatId, string $fileContent): array
+    public function sendPhoto(int $chatId, string $fileContent): array
     {
         $filePath = '/var/www/'.uniqid('img_').'.jpg';
         $res = file_put_contents($filePath, $fileContent);

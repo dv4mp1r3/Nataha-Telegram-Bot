@@ -21,14 +21,17 @@ $db = new \PDO(PDO_MEME_DSN);
 $db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 $logger = new \Misc\EchoLogger();
 try{
+    $seBot = new \Bots\TelegramSecurityExpertBot(
+        $reader,
+        (new CommandListener())->addCommand('/hashid', new HashIdCommand())
+    );
+    $seBot->setMaxWordsCount(intval(getenv('MAX_WORDS_COUNT')));
+    $nBot = new TelegramNeVsratoslavBot();
+    $nBot->setTextGenerator(new MarkovChainsTextGenerator(CONFIG_PATH))
+        ->setFontPath(__DIR__.'/lobster.ttf')
+        ->setParent($seBot);
     (new Application(
-        (new TelegramNeVsratoslavBot(
-            $reader,
-            (new CommandListener())
-                ->addCommand('/hashid', new HashIdCommand())
-        ))->setFontPath(__DIR__.'/lobster.ttf')
-            ->setMaxWordsCount(intval(getenv('MAX_WORDS_COUNT')))
-            ->setTextGenerator(new MarkovChainsTextGenerator(CONFIG_PATH)),
+        $nBot,
         $logger,
         defined('IS_DEBUG') && IS_DEBUG
     )
