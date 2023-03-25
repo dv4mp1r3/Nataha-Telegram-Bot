@@ -1,0 +1,47 @@
+{
+  "update_id": 12,
+  "message": {
+    "message_id": 1,
+    "from": {
+      "id": 1,
+      "is_bot": false,
+      "first_name": "\u2615\ufe0f",
+      "username": "username",
+      "language_code": "ru"
+    },
+    "chat": {
+      "id": 1,
+      "first_name": "\u2615\ufe0f",
+      "username": "username",
+      "type": "private"
+    },
+    "date": 1600345226,
+    "reply_to_message": {
+      "message_id": 945,
+      "from": {
+        "id": 1,
+        "is_bot": false,
+        "first_name": "\u2615\ufe0f",
+        "username": "username",
+        "language_code": "ru"
+      },
+      "chat": {
+        "id": 1,
+        "first_name": "\u2615\ufe0f",
+        "username": "username",
+        "type": "private"
+      },
+      "date": 1599760472,
+      "photo": [
+        {
+          "file_id": "A",
+          "file_unique_id": "A",
+          "file_size": 11553,
+          "width": 276,
+          "height": 204
+        }
+      ]
+    },
+    "text": "\u0441\u043e\u0441\u0443\u0440\u0438\u0442\u0438"
+  }
+}

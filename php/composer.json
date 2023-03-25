@@ -19,12 +19,17 @@
     "ext-mbstring": "*",
     "dv4mp1r3/pbot": "dev-main"
   },
+  "require-dev": {
+    "phpunit/phpunit": "^8",
+    "phpunit/php-code-coverage": "^7"
+  },
   "autoload": {
     "psr-4": {
       "Bots\\": "Bots/",
       "Commands\\": "Commands/",
       "ResourceParsers\\": "ResourceParsers/",
-      "Misc\\": "Misc"
+      "Misc\\": "Misc",
+      "tests\\": "tests/"
     }
   }
 }
