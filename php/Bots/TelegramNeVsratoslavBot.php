@@ -7,8 +7,10 @@ namespace Bots;
 use Misc\NeVsratoslav;
 use Misc\SecurityExpert;
 use Misc\TextGenerator;
+use pbot\Bots\IBot;
+use pbot\Bots\ParentBot;
 
-class TelegramNeVsratoslavBot extends TelegramSecurityExpertBot
+class TelegramNeVsratoslavBot implements IBot, ParentBot
 {
     const PARENT_MAX_WORDS = 100;
     const ERROR_SEND_PHOTO = 'Не удалось загрузить фото';
@@ -16,6 +18,18 @@ class TelegramNeVsratoslavBot extends TelegramSecurityExpertBot
     private string $fontPath;
 
     private TextGenerator $generator;
+
+    private ?IBot $parent;
+
+    public function setParent(IBot $pb): void
+    {
+        $this->parent = $pb;
+    }
+
+    public function getParent(): TelegramSecurityExpertBot
+    {
+        return $this->parent;
+    }
 
     /**
      * @param string $fontPath
@@ -39,7 +53,7 @@ class TelegramNeVsratoslavBot extends TelegramSecurityExpertBot
      */
     public function isImageReply(array $message): bool
     {
-        return $this->isReply($message, '') && $this->replMessageIsImage($message);
+        return $this->getParent()->isReply($message, '') && $this->replMessageIsImage($message);
     }
 
     /**
@@ -56,11 +70,9 @@ class TelegramNeVsratoslavBot extends TelegramSecurityExpertBot
     }
 
     private function isNoNeedToExecute(): bool {
-        if ($this->isCommandAlreadyExecuted) {
-            return true;
-        }
-        if ($this->chatId != ID_CREATOR && $this->chatId != ID_CHAT) {
-            $this->sendMessage($this->chatId, SecurityExpert::MESSAGE_GET_OFF);
+        $chatId = $this->getParent()->getChatId();
+        if ($chatId != ID_CREATOR && $chatId != ID_CHAT) {
+            $this->getParent()->sendMessage($chatId, SecurityExpert::MESSAGE_GET_OFF);
             return true;
         }
         return false;
@@ -72,29 +84,30 @@ class TelegramNeVsratoslavBot extends TelegramSecurityExpertBot
             return;
         }
         $nvsrt = new NeVsratoslav($this->generator);
-        $lowerRawText = mb_strtolower($this->rawText);
-        if ($this->isImageReply($this->decodedInput) && $nvsrt->isReply($lowerRawText)) {
-            $lastPhotoIndex = count($this->decodedInput['message']['reply_to_message']['photo']) - 1;
-            $lastPhoto = $this->decodedInput['message']['reply_to_message']['photo'][$lastPhotoIndex];
-            $filePath = $this->getFilePath($lastPhoto['file_id']);
-            $image = $this->downloadFile($filePath);
+        $lowerRawText = mb_strtolower($this->getParent()->getRawText());
+        $decodedInput = $this->getParent()->getDecodedInput();
+        if ($this->isImageReply($decodedInput) && $nvsrt->isReply($lowerRawText)) {
+            $lastPhotoIndex = count($decodedInput['message']['reply_to_message']['photo']) - 1;
+            $lastPhoto = $decodedInput['message']['reply_to_message']['photo'][$lastPhotoIndex];
+            $filePath = $this->getParent()->getFilePath($lastPhoto['file_id']);
+            $image = $this->getParent()->downloadFile($filePath);
             $image = $nvsrt->addTextToImage(
                 $image,
                 $this->fontPath
             );
             try {
-                $this->sendPhoto($this->chatId, $image);
+                $this->getParent()->sendPhoto($this->getParent()->getChatId(), $image);
                 return;
             } catch (\Exception $e) {
                 $messageText = self::ERROR_SEND_PHOTO;
                 if (defined('IS_DEBUG') && IS_DEBUG) {
                     $messageText .= "\r\n" . $e->getMessage();
                 }
-                $this->sendMessage($this->chatId, $messageText);
+                $this->getParent()->sendMessage($this->getParent()->getChatId(), $messageText);
             }
         } else {
-            $this->setMaxWordsCount(self::PARENT_MAX_WORDS);
-            parent::execute();
+            $this->getParent()->setMaxWordsCount(self::PARENT_MAX_WORDS);
+            $this->getParent()->execute();
         }
     }
 

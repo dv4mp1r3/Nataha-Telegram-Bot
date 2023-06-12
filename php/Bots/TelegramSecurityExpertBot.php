@@ -33,28 +33,27 @@ class TelegramSecurityExpertBot extends TelegramMarkovBot
             return;
         }
         $securityExpert = new SecurityExpert();
-
-        if ($this->chatId != ID_CREATOR && $this->chatId != ID_CHAT) {
-            $this->sendMessage($this->chatId, SecurityExpert::MESSAGE_GET_OFF);
+        if ($this->getChatId() != ID_CREATOR && $this->getChatId() != ID_CHAT) {
+            $this->sendMessage($this->getChatId(), SecurityExpert::MESSAGE_GET_OFF);
             return;
         }
 
-        $lowerRawText = mb_strtolower($this->rawText);
+        $lowerRawText = mb_strtolower($this->getRawText());
         $isSecurityReply = $securityExpert->isReply($lowerRawText);
         if ($securityExpert->isStickerTemplateMessage($lowerRawText))
         {
-            $this->sendMessage($this->chatId, $securityExpert->getMessageText(), 'sendSticker');
+            $this->sendMessage($this->getChatId(), $securityExpert->getMessageText(), 'sendSticker');
         }
         else if ($isSecurityReply && $securityExpert->isBlogTemplateMessage($lowerRawText)) {
-            $this->sendMessage($this->chatId, "НЕТУ");
+            $this->sendMessage($this->getChatId(), "НЕТУ");
         }
-        else if ($this->isReply($this->decodedInput) || $isSecurityReply)
+        else if ($this->isReply($this->getDecodedInput()) || $isSecurityReply)
         {
             $text = $this->markov->generateText($this->maxWordsCount);
             if (!$text) {
                 $text = SecurityExpert::MESSAGE_LOW_DATA;
             }
-            $this->sendMessage($this->chatId, $text);
+            $this->sendMessage($this->getChatId(), $text);
         }
     }
 }

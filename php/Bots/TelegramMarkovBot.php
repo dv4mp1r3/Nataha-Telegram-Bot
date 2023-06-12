@@ -38,7 +38,7 @@ class TelegramMarkovBot extends TelegramBot
     {
         parent::execute();
         if (!$this->isCommandAlreadyExecuted) {
-            $preparedText = strtolower($this->rawText);
+            $preparedText = strtolower($this->getRawText());
             foreach (self::$filterRegEx as $pattern) {
                 $preparedText = preg_replace($pattern, " ", $preparedText);
             }
