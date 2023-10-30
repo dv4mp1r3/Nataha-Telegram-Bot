@@ -16,39 +16,33 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let db = Database::new(&file_path)?;
     let _ = std::fs::remove_file(socket_path);
     let listener = UnixListener::bind(socket_path)?;
-    loop{
+    loop {
         let (socket, _) = listener.accept().await?;
-        let input = match read_data(&socket).await{
-            Ok(input) => {
-                input
-            }
+        let input = match read_data(&socket).await {
+            Ok(input) => input,
             Err(e) => {
                 write_error(&socket).await?;
                 dbg!(e);
                 continue;
             }
         };
-        match db.gen(input){
+        match db.gen(input) {
             Ok(sentence) => {
-                let json_data = if let Ok(json_data) = serde_json::to_string(&sentence){
+                let json_data = if let Ok(json_data) = serde_json::to_string(&sentence) {
                     json_data
-                }else{
+                } else {
                     write_error(&socket).await?;
                     dbg!("Error while serializing data");
                     continue;
                 };
 
-                match write_data(&socket, json_data.as_bytes()).await{
-                    Ok(x) => {
-
-                    }
+                match write_data(&socket, json_data.as_bytes()).await {
+                    Ok(x) => {}
                     Err(e) => {
                         println!("Error while writing good data : ");
                         dbg!(e);
                     }
                 }
-
-
             }
             Err(e) => {
                 write_error(&socket).await?;
@@ -58,14 +52,17 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         };
     }
 }
-async fn write_error(stream : &tokio::net::UnixStream) -> Result<(), Box<dyn std::error::Error>>{
+async fn write_error(stream: &tokio::net::UnixStream) -> Result<(), Box<dyn std::error::Error>> {
     write_data(stream, b"0x503").await?;
     Ok(())
 }
-async fn write_data(stream : &tokio::net::UnixStream, data: &[u8]) -> Result<usize, Box<dyn std::error::Error>>{
-    loop{
+async fn write_data(
+    stream: &tokio::net::UnixStream,
+    data: &[u8],
+) -> Result<usize, Box<dyn std::error::Error>> {
+    loop {
         stream.writable().await?;
-        match stream.try_write(data){
+        match stream.try_write(data) {
             Ok(bytes) => {
                 return Ok(bytes);
             }
@@ -78,12 +75,12 @@ async fn write_data(stream : &tokio::net::UnixStream, data: &[u8]) -> Result<usi
         }
     }
 }
-async fn read_data(stream: &tokio::net::UnixStream) -> Result<String, Box<dyn std::error::Error>>{
+async fn read_data(stream: &tokio::net::UnixStream) -> Result<String, Box<dyn std::error::Error>> {
     let mut msg = vec![];
-    loop{
+    loop {
         stream.readable().await?;
-        let mut data = vec![0;4096];
-        match stream.try_read(&mut data){
+        let mut data = vec![0; 4096];
+        match stream.try_read(&mut data) {
             Ok(n) => {
                 data.truncate(n);
                 msg.append(&mut data);
@@ -98,6 +95,6 @@ async fn read_data(stream: &tokio::net::UnixStream) -> Result<String, Box<dyn st
         }
     }
     let string = String::from_utf8(msg)?;
-    
+
     Ok(string)
 }

@@ -1,6 +1,7 @@
 use parking_lot::RwLock;
 use rand::distributions::WeightedIndex;
 use rand::{prelude::Distribution, seq::IteratorRandom, Rng};
+use std::sync::Arc;
 use std::time::Duration;
 use std::{collections::HashMap, fs};
 
@@ -19,8 +20,8 @@ pub struct DbItem {
 ///
 ///
 pub struct WordsCached {
-    inner: RwLock<HashMap<String, usize>>,
-    words: RwLock<Vec<String>>,
+    inner: RwLock<HashMap<Arc<String>, usize>>,
+    words: RwLock<Vec<Arc<String>>>,
     timeout: Duration,
 }
 
@@ -110,21 +111,27 @@ type MainWriter<'a> = parking_lot::lock_api::RwLockWriteGuard<
     HashMap<usize, Vec<DbItem>>,
 >;
 
-type WordsReader<'a> =
-    parking_lot::lock_api::RwLockReadGuard<'a, parking_lot::RawRwLock, Vec<std::string::String>>;
-type WordsWriter<'a> =
-    parking_lot::lock_api::RwLockWriteGuard<'a, parking_lot::RawRwLock, Vec<std::string::String>>;
+type WordsReader<'a> = parking_lot::lock_api::RwLockReadGuard<
+    'a,
+    parking_lot::RawRwLock,
+    Vec<Arc<std::string::String>>,
+>;
+type WordsWriter<'a> = parking_lot::lock_api::RwLockWriteGuard<
+    'a,
+    parking_lot::RawRwLock,
+    Vec<Arc<std::string::String>>,
+>;
 
 type ChainReader<'a> = parking_lot::lock_api::RwLockReadGuard<
     'a,
     parking_lot::RawRwLock,
-    HashMap<std::string::String, usize>,
+    HashMap<Arc<std::string::String>, usize>,
 >;
 
 type ChainWriter<'a> = parking_lot::lock_api::RwLockWriteGuard<
     'a,
     parking_lot::RawRwLock,
-    HashMap<std::string::String, usize>,
+    HashMap<Arc<std::string::String>, usize>,
 >;
 
 impl WordsCached {
@@ -144,12 +151,12 @@ impl WordsCached {
         let writer = self.words.try_write_for(self.timeout).ok_or("Poisoned")?;
         Ok(writer)
     }
-    pub fn get_chain_reader(&self) -> Result<ChainReader, Box<dyn std::error::Error>> {
+    pub fn get_chain_reader<'b>(&'b self) -> Result<ChainReader<'b>, Box<dyn std::error::Error>> {
         let reader = self.inner.try_read_for(self.timeout).ok_or("Poisoned")?;
         Ok(reader)
     }
 
-    pub fn get_chain_writer(&self) -> Result<ChainWriter, Box<dyn std::error::Error>> {
+    pub fn get_chain_writer<'b>(&'b self) -> Result<ChainWriter, Box<dyn std::error::Error>> {
         let writer = self.inner.try_write_for(self.timeout).ok_or("Poisoned")?;
         Ok(writer)
     }
@@ -161,16 +168,16 @@ impl WordsCached {
     pub fn len(&self) -> (usize, usize) {
         return (self.inner.read().len(), self.words.read().len());
     }
-    pub fn insert(&self, value: &String) -> Result<usize, Box<dyn std::error::Error>> {
+    pub fn insert(&self, value: String) -> Result<usize, Box<dyn std::error::Error>> {
         let mut map = self.inner.try_write_for(self.timeout).ok_or("Posioned")?;
-        let word = map.get(value);
+        let word = map.get(&value);
         match word {
             None => {
-                let word = value.clone();
+                let word = Arc::new(value);
                 let mut words_vec = self.words.try_write_for(self.timeout).ok_or("Poisoned")?;
                 let index = words_vec.len();
                 words_vec.push(word.clone());
-                map.insert(value.to_owned(), index);
+                map.insert(word, index);
                 return Ok(index);
             }
             Some(item) => {
@@ -181,7 +188,7 @@ impl WordsCached {
     pub fn get(&self, id: usize) -> Result<String, Box<dyn std::error::Error>> {
         let words = self.words.try_read_for(self.timeout).ok_or("Poisoned")?;
         let output = words.get(id).ok_or("Data race occured")?;
-        Ok(output.clone())
+        Ok(output.to_string())
     }
 
     pub fn get_by_string(
@@ -200,7 +207,7 @@ impl WordsCached {
                     println!("Joining is broken : {}", &id);
                 }
                 Some(word) => {
-                    output.push(word.to_owned());
+                    output.push(word.to_string());
                 }
             }
         }
@@ -242,7 +249,7 @@ impl Database {
         println!("[Parsing]\tInitial parsing, might take a while");
         let now = std::time::Instant::now();
         data.into_iter().for_each(|(key, values)| {
-            let main_index = match words_cache.insert(key) {
+            let main_index = match words_cache.insert(key.to_owned()) {
                 Ok(index) => index,
                 Err(_) => {
                     dbg!("error while inserting");
@@ -253,7 +260,7 @@ impl Database {
             let mut objects: Vec<DbItem> = vec![];
             for map in values.as_object() {
                 map.into_iter().for_each(|(key, val)| {
-                    let word_index = match words_cache.insert(key) {
+                    let word_index = match words_cache.insert(key.to_owned()) {
                         Ok(index) => index,
                         Err(_) => 0,
                     };
