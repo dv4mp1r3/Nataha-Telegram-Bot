@@ -151,12 +151,12 @@ impl WordsCached {
         let writer = self.words.try_write_for(self.timeout).ok_or("Poisoned")?;
         Ok(writer)
     }
-    pub fn get_chain_reader<'b>(&'b self) -> Result<ChainReader<'b>, Box<dyn std::error::Error>> {
+    pub fn get_chain_reader(&self) -> Result<ChainReader, Box<dyn std::error::Error>> {
         let reader = self.inner.try_read_for(self.timeout).ok_or("Poisoned")?;
         Ok(reader)
     }
 
-    pub fn get_chain_writer<'b>(&'b self) -> Result<ChainWriter, Box<dyn std::error::Error>> {
+    pub fn get_chain_writer(&self) -> Result<ChainWriter, Box<dyn std::error::Error>> {
         let writer = self.inner.try_write_for(self.timeout).ok_or("Poisoned")?;
         Ok(writer)
     }
