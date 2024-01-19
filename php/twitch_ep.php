@@ -21,10 +21,11 @@ $bot = new TwitchSecurityExpertBot(
     CONFIG_PATH
 );
 if (intval(getenv('USE_DISCORD')) === 1) {
+    $nodeHost = getenv('DISCORD_SERVICE_HOSTNAME');
     $bot->setEvent(
     SocketBot::BEFORE_SEND_EVENT,
     new TwitchBeforeSendEvent(
-        "http://node:3000/audio",
+        "http://$nodeHost:3000/audio",
         getenv('YA_CLOUD_TOKEN'),
         getenv('YA_CLOUD_FOLDER'))
     );
