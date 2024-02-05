@@ -23,7 +23,6 @@ RUN apk add --no-cache $PHPIZE_DEPS git \
       libpng-dev \
     && rm -rf /tmp/*
 
-FROM php_74 as composer_74
 WORKDIR /var/www
 COPY --from=composer/composer /usr/bin/composer /usr/bin/composer
 

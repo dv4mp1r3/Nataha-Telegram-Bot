@@ -1,0 +1,183 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.74.prod.yaml
+    kompose.version: 1.31.2 (a92241f79)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: nataha-node
+  name: nataha-node
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: nataha-node
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose.74.prod.yaml
+        kompose.version: 1.31.2 (a92241f79)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/nataha-telegram-bot-default: "true"
+        io.kompose.service: nataha-node
+    spec:
+      containers:
+        - command:
+            - node
+            - --trace-events-enabled
+            - discord.js
+          env:
+            - name: DISCORD_TOKEN
+              valueFrom:
+                configMapKeyRef:
+                  key: DISCORD_TOKEN
+                  name: vars-env
+            - name: DISCORD_SERVICE_HOSTNAME
+              valueFrom:
+                configMapKeyRef:
+                  key: DISCORD_SERVICE_HOSTNAME
+                  name: vars-env
+            - name: DISCORD_TOKEN_DEBUG
+              valueFrom:
+                configMapKeyRef:
+                  key: DISCORD_TOKEN_DEBUG
+                  name: vars-env
+            - name: FLOCK_SLEEP_INTERVAL
+              valueFrom:
+                configMapKeyRef:
+                  key: FLOCK_SLEEP_INTERVAL
+                  name: vars-env
+            - name: IDENT
+              valueFrom:
+                configMapKeyRef:
+                  key: IDENT
+                  name: vars-env
+            - name: ID_CHAT
+              valueFrom:
+                configMapKeyRef:
+                  key: ID_CHAT
+                  name: vars-env
+            - name: ID_CREATOR
+              valueFrom:
+                configMapKeyRef:
+                  key: ID_CREATOR
+                  name: vars-env
+            - name: MAX_DB_READ_TRY
+              valueFrom:
+                configMapKeyRef:
+                  key: MAX_DB_READ_TRY
+                  name: vars-env
+            - name: MAX_MESSAGE_LENGTH
+              valueFrom:
+                configMapKeyRef:
+                  key: MAX_MESSAGE_LENGTH
+                  name: vars-env
+            - name: MAX_WORDS_COUNT
+              valueFrom:
+                configMapKeyRef:
+                  key: MAX_WORDS_COUNT
+                  name: vars-env
+            - name: NODE_ENV
+              valueFrom:
+                configMapKeyRef:
+                  key: NODE_ENV
+                  name: vars-env
+            - name: PDO_MEME_DSN
+              valueFrom:
+                configMapKeyRef:
+                  key: PDO_MEME_DSN
+                  name: vars-env
+            - name: PHP_IDE_CONFIG
+              valueFrom:
+                configMapKeyRef:
+                  key: PHP_IDE_CONFIG
+                  name: vars-env
+            - name: QUEUE_NAME
+              valueFrom:
+                configMapKeyRef:
+                  key: QUEUE_NAME
+                  name: vars-env
+            - name: REDIS_HOST
+              valueFrom:
+                configMapKeyRef:
+                  key: REDIS_HOST
+                  name: vars-env
+            - name: TELEGRAM_BOT_TOKEN
+              valueFrom:
+                configMapKeyRef:
+                  key: TELEGRAM_BOT_TOKEN
+                  name: vars-env
+            - name: TELEGRAM_MOCK_URL
+              valueFrom:
+                configMapKeyRef:
+                  key: TELEGRAM_MOCK_URL
+                  name: vars-env
+            - name: TWITCH_CHANNEL_NAME
+              valueFrom:
+                configMapKeyRef:
+                  key: TWITCH_CHANNEL_NAME
+                  name: vars-env
+            - name: TWITCH_DEFAULT_PORT
+              valueFrom:
+                configMapKeyRef:
+                  key: TWITCH_DEFAULT_PORT
+                  name: vars-env
+            - name: TWITCH_DEFAULT_SERVER
+              valueFrom:
+                configMapKeyRef:
+                  key: TWITCH_DEFAULT_SERVER
+                  name: vars-env
+            - name: TWITCH_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  key: TWITCH_PASSWORD
+                  name: vars-env
+            - name: TWITCH_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  key: TWITCH_USERNAME
+                  name: vars-env
+            - name: TWITTER_ACCESS_TOKEN
+              valueFrom:
+                configMapKeyRef:
+                  key: TWITTER_ACCESS_TOKEN
+                  name: vars-env
+            - name: TWITTER_ACCESS_TOKEN_SECRET
+              valueFrom:
+                configMapKeyRef:
+                  key: TWITTER_ACCESS_TOKEN_SECRET
+                  name: vars-env
+            - name: TWITTER_CONSUMER_KEY
+              valueFrom:
+                configMapKeyRef:
+                  key: TWITTER_CONSUMER_KEY
+                  name: vars-env
+            - name: TWITTER_CONSUMER_SECRET
+              valueFrom:
+                configMapKeyRef:
+                  key: TWITTER_CONSUMER_SECRET
+                  name: vars-env
+            - name: XDEBUG_SESSION
+              valueFrom:
+                configMapKeyRef:
+                  key: XDEBUG_SESSION
+                  name: vars-env
+            - name: YA_CLOUD_FOLDER
+              valueFrom:
+                configMapKeyRef:
+                  key: YA_CLOUD_FOLDER
+                  name: vars-env
+            - name: YA_CLOUD_TOKEN
+              valueFrom:
+                configMapKeyRef:
+                  key: YA_CLOUD_TOKEN
+                  name: vars-env
+          image: nataha-node:1.0
+          name: nataha-node
+          resources: {}
+      restartPolicy: Always
+status: {}
