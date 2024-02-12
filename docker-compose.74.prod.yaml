@@ -34,8 +34,6 @@ services:
       - configs/vars.env
     environment:
       NODE_ENV: "production"
-    volumes:
-      - ./js:/home/node/app
     user: "node"
     depends_on:
       - nginx

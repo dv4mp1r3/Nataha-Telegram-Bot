@@ -1,5 +1,10 @@
 const Discord = require('discord.js');
 const { Intents } = require("discord.js");
+const libsodium = require("libsodium-wrappers");
+(async () => {
+    await libsodium.ready;
+})();
+
 const { joinVoiceChannel, createAudioPlayer, createAudioResource } = require('@discordjs/voice');
 const fs = require('fs');
 const client = new Discord.Client({
