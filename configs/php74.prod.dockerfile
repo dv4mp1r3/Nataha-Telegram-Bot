@@ -1,3 +1,11 @@
+FROM composer:2.7.1 as composer
+WORKDIR /var/www
+COPY ./php/composer.json ./php/composer.lock ./
+RUN composer install --no-dev \
+ --ignore-platform-req=ext-sockets \
+ --ignore-platform-req=ext-pcntl \
+ --ignore-platform-req=ext-gd
+
 FROM php:7.4-fpm-alpine3.12 as php_74
 RUN apk add --no-cache $PHPIZE_DEPS git \
     && pecl install redis \
@@ -24,9 +32,8 @@ RUN apk add --no-cache $PHPIZE_DEPS git \
     && rm -rf /tmp/*
 
 WORKDIR /var/www
-COPY --from=composer/composer /usr/bin/composer /usr/bin/composer
-
 COPY ./php /var/www
+COPY --from=composer /var/www/vendor /var/www/vendor
 
 RUN addgroup -S web \
     && adduser \
@@ -36,7 +43,6 @@ RUN addgroup -S web \
     --ingroup web \
     --uid "1000" \
     web \
-    && composer install \
     && chown -R web:web /var/www
 
 USER web
