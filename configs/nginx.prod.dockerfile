@@ -1,4 +1,4 @@
-FROM library/nginx:alpine as nginx
+FROM library/nginx:1.25.4-alpine3.18-perl as nginx
 
 RUN addgroup -S web \
     && adduser \
@@ -9,9 +9,10 @@ RUN addgroup -S web \
     --uid "1000" \
     web \
     && touch /var/run/nginx.pid \
-    && chown -R web:web /var/run/nginx.pid /var/cache/nginx
+    && mkdir /var/www \
+    && chown -R web:web /var/run/nginx.pid /var/cache/nginx /etc/nginx/conf.d
 
-COPY ./php /var/www
-COPY ./configs/nginx.conf /etc/nginx/conf.d/site.conf
 
+COPY ./php/ep.php /var/www/ep.php
+COPY ./configs/nginx.conf /etc/nginx/templates/site.conf.template
 USER web
