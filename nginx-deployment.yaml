@@ -33,5 +33,13 @@ spec:
               hostPort: 8001
               protocol: TCP
           resources: {}
+          env:
+            - name: NGINX_DOMAIN
+              valueFrom:
+                configMapKeyRef:
+                  key: NGINX_DOMAIN
+                  name: vars-env
+            - name: NGINX_PHP_HOST
+              value: nataha-php-telegram
       restartPolicy: Always
 status: {}

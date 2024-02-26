@@ -40,10 +40,7 @@ spec:
                   key: USE_DISCORD
                   name: vars-env
             - name: DISCORD_SERVICE_HOSTNAME
-              valueFrom:
-                configMapKeyRef:
-                  key: DISCORD_SERVICE_HOSTNAME
-                  name: vars-env
+              value: nataha-node
             - name: FLOCK_SLEEP_INTERVAL
               valueFrom:
                 configMapKeyRef:
@@ -99,7 +96,12 @@ spec:
                 configMapKeyRef:
                   key: YA_CLOUD_TOKEN
                   name: vars-env
-          image: nataha-php-telegram:2.0
+            - name: IDENT
+              valueFrom:
+                configMapKeyRef:
+                  key: IDENT
+                  name: vars-env
+          image: nataha-php-telegram:1.0
           name: php-twitch
           resources: {}
       restartPolicy: Always
