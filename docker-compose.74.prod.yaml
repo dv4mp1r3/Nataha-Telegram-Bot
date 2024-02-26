@@ -34,6 +34,7 @@ services:
       - IDENT=${IDENT}
     entrypoint: ["php", "twitch_ep.php"]
   nginx:
+    image: nataha-nginx:1.0
     build:
       context: ./
       dockerfile: configs/nginx.prod.dockerfile
@@ -47,6 +48,7 @@ services:
     links:
       - php-telegram
   node:
+    image: nataha-node:1.0
     build:
       context: ./
       dockerfile: configs/node.prod.dockerfile
