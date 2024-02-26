@@ -29,3 +29,15 @@ RUN apk add --no-cache $PHPIZE_DEPS git \
 FROM php_74 as composer_74
 WORKDIR /var/www
 COPY --from=composer/composer /usr/bin/composer /usr/bin/composer
+
+RUN addgroup -S web \
+    && adduser \
+    --disabled-password \
+    --gecos "" \
+    --home /home/web \
+    --ingroup web \
+    --uid "1000" \
+    web \
+    && chown -R web:web /var/www
+
+USER web
