@@ -10,4 +10,4 @@ RUN apk --no-cache --virtual build-dependencies add \
     && npm install
 
 FROM node_assets as node_app
-CMD ["npm", "start"]
+CMD ["npm", "run", "dev"]

@@ -1,0 +1,108 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.74.prod.yaml
+    kompose.version: 1.31.2 (a92241f79)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: php-twitch
+  name: php-twitch
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: php-twitch
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose.74.prod.yaml
+        kompose.version: 1.31.2 (a92241f79)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/nataha-telegram-bot-default: "true"
+        io.kompose.service: php-twitch
+    spec:
+      containers:
+        - command:
+            - php
+            - twitch_ep.php
+          env:
+            - name: IS_DEBUG
+              valueFrom:
+                configMapKeyRef:
+                  key: IS_DEBUG
+                  name: vars-env
+            - name: USE_DISCORD
+              valueFrom:
+                configMapKeyRef:
+                  key: USE_DISCORD
+                  name: vars-env
+            - name: DISCORD_SERVICE_HOSTNAME
+              value: nataha-node
+            - name: FLOCK_SLEEP_INTERVAL
+              valueFrom:
+                configMapKeyRef:
+                  key: FLOCK_SLEEP_INTERVAL
+                  name: vars-env
+            - name: MAX_WORDS_COUNT
+              valueFrom:
+                configMapKeyRef:
+                  key: MAX_WORDS_COUNT
+                  name: vars-env
+            - name: PHP_IDE_CONFIG
+              valueFrom:
+                configMapKeyRef:
+                  key: PHP_IDE_CONFIG
+                  name: vars-env
+            - name: TWITCH_CHANNEL_NAME
+              valueFrom:
+                configMapKeyRef:
+                  key: TWITCH_CHANNEL_NAME
+                  name: vars-env
+            - name: TWITCH_DEFAULT_PORT
+              valueFrom:
+                configMapKeyRef:
+                  key: TWITCH_DEFAULT_PORT
+                  name: vars-env
+            - name: TWITCH_DEFAULT_SERVER
+              valueFrom:
+                configMapKeyRef:
+                  key: TWITCH_DEFAULT_SERVER
+                  name: vars-env
+            - name: TWITCH_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  key: TWITCH_PASSWORD
+                  name: vars-env
+            - name: TWITCH_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  key: TWITCH_USERNAME
+                  name: vars-env
+            - name: XDEBUG_SESSION
+              valueFrom:
+                configMapKeyRef:
+                  key: XDEBUG_SESSION
+                  name: vars-env
+            - name: YA_CLOUD_FOLDER
+              valueFrom:
+                configMapKeyRef:
+                  key: YA_CLOUD_FOLDER
+                  name: vars-env
+            - name: YA_CLOUD_TOKEN
+              valueFrom:
+                configMapKeyRef:
+                  key: YA_CLOUD_TOKEN
+                  name: vars-env
+            - name: IDENT
+              valueFrom:
+                configMapKeyRef:
+                  key: IDENT
+                  name: vars-env
+          image: nataha-php-telegram:1.0
+          name: php-twitch
+          resources: {}
+      restartPolicy: Always
+status: {}

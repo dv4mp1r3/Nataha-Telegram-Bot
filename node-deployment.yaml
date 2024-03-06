@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.74.prod.yaml
+    kompose.version: 1.31.2 (a92241f79)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: nataha-node
+  name: nataha-node
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: nataha-node
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose.74.prod.yaml
+        kompose.version: 1.31.2 (a92241f79)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/nataha-telegram-bot-default: "true"
+        io.kompose.service: nataha-node
+    spec:
+      containers:
+        - command:
+            - node
+            - app.js
+          env:
+            - name: DISCORD_TOKEN
+              valueFrom:
+                configMapKeyRef:
+                  key: DISCORD_TOKEN
+                  name: vars-env
+            - name: NODE_ENV
+              valueFrom:
+                configMapKeyRef:
+                  key: NODE_ENV
+                  name: vars-env
+          image: nataha-node:1.0
+          name: nataha-node
+          resources: {}
+      restartPolicy: Always
+status: {}
