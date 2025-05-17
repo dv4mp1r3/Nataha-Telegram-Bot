@@ -1,10 +1,10 @@
-version: "3"
 services:
   php-telegram:
-    image: nataha-php-telegram:debug
     build:
       context: ./
       dockerfile: configs/php74.dockerfile
+      target: php_74_prod
+    image: nataha-php-telegram:1.0
     environment:
       - IS_DEBUG=${IS_DEBUG}
       - IDENT=${IDENT}
@@ -16,16 +16,12 @@ services:
       - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
       - PDO_MEME_DSN=${PDO_MEME_DSN}
       - MAX_WORDS_COUNT=${MAX_WORDS_COUNT}
-      - PHP_IDE_CONFIG=serverName=nataha.local
-      - XDEBUG_SESSION=1
-    volumes:
-      - ./php:/var/www
-      - ./configs/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
   php-twitch:
-    image: nataha-php-telegram:debug
     build:
       context: ./
       dockerfile: configs/php74.dockerfile
+      target: php_74_prod
+    image: nataha-php-telegram:1.0
     environment:
       - TWITCH_DEFAULT_SERVER=${TWITCH_DEFAULT_SERVER}
       - TWITCH_DEFAULT_PORT=${TWITCH_DEFAULT_PORT}
@@ -37,37 +33,30 @@ services:
       - YA_CLOUD_FOLDER=${YA_CLOUD_FOLDER}
       - USE_DISCORD=${USE_DISCORD}
       - IDENT=${IDENT}
-      - PHP_IDE_CONFIG=serverName=nataha.local
-      - XDEBUG_SESSION=1
-    volumes:
-      - ./php:/var/www
-      - ./configs/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
     entrypoint: ["php", "twitch_ep.php"]
   nginx:
-    image: library/nginx:alpine
+    image: nataha-nginx:1.0
+    build:
+      context: ./
+      dockerfile: configs/nginx.prod.dockerfile
     environment:
       - NGINX_DOMAIN=${NGINX_DOMAIN}
       - NGINX_PHP_HOST=${NGINX_PHP_HOST}
     ports:
       - "8001:80"
-    volumes:
-    - ./php:/var/www
-    - ./configs/nginx.conf:/etc/nginx/templates/site.conf.template
     depends_on:
       - php-telegram
+    links:
+      - php-telegram
   node:
-    image: nataha-node:debug
+    image: nataha-node:1.0
     build:
       context: ./
       dockerfile: configs/node.dockerfile
+      target: node_prod
     environment:
-      NODE_ENV: "development"
+      NODE_ENV: "production"
       DISCORD_TOKEN: ${DISCORD_TOKEN}
-    volumes:
-      - ./js:/home/node/app
     user: "node"
-    ports:
-    - "9229:9229"
     depends_on:
       - nginx
-    #entrypoint: ["node", "--inspect",  "--inspect-brk=0.0.0.0", "/home/node/app/discord.js"]
