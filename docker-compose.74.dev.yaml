@@ -2,12 +2,19 @@ services:
   php-telegram:
     build:
       target: php_74_dev
+    environment:
+      - PHP_IDE_CONFIG=${PHP_IDE_CONFIG}
+      - XDEBUG_SESSION=1
+      - ID_CHAT=1
     volumes:
       - ./php:/var/www
       - ./configs/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
   php-twitch:
     build:
       target: php_74_dev
+    environment:
+      - PHP_IDE_CONFIG=${PHP_IDE_CONFIG}
+      - XDEBUG_SESSION=1
     volumes:
       - ./php:/var/www
       - ./configs/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
