@@ -1,9 +1,9 @@
-version: "3"
 services:
   php-telegram:
     build:
       context: ./
-      dockerfile: configs/php74.prod.dockerfile
+      dockerfile: configs/php84.dockerfile
+      target: php_84_prod
     image: nataha-php-telegram:1.0
     environment:
       - IS_DEBUG=${IS_DEBUG}
@@ -19,7 +19,8 @@ services:
   php-twitch:
     build:
       context: ./
-      dockerfile: configs/php74.prod.dockerfile
+      dockerfile: configs/php84.dockerfile
+      target: php_84_prod
     image: nataha-php-telegram:1.0
     environment:
       - TWITCH_DEFAULT_SERVER=${TWITCH_DEFAULT_SERVER}
@@ -51,7 +52,8 @@ services:
     image: nataha-node:1.0
     build:
       context: ./
-      dockerfile: configs/node.prod.dockerfile
+      dockerfile: configs/node.dockerfile
+      target: node_prod
     environment:
       NODE_ENV: "production"
       DISCORD_TOKEN: ${DISCORD_TOKEN}

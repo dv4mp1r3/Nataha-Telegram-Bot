@@ -1,0 +1,35 @@
+services:
+  php-telegram:
+    build:
+      target: php_84_dev
+    volumes:
+      - ./php:/var/www
+      - ./configs/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+    environment:
+      - PHP_IDE_CONFIG=${PHP_IDE_CONFIG}
+      - XDEBUG_SESSION=1
+  php-twitch:
+    build:
+      target: php_84_dev
+    volumes:
+      - ./php:/var/www
+      - ./configs/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+    environment:
+      - PHP_IDE_CONFIG=${PHP_IDE_CONFIG}
+      - XDEBUG_SESSION=1
+  nginx:
+    volumes:
+    - ./php:/var/www
+    - ./configs/nginx.conf:/etc/nginx/templates/site.conf.template
+  node:
+    build:
+      context: ./
+      target: node_dev
+    environment:
+      NODE_ENV: "development"
+    volumes:
+    #todo: fix (pass only js file)
+      - ./js:/home/node/app
+    ports:
+    - "9229:9229"
+    #entrypoint: ["node", "--inspect",  "--inspect-brk=0.0.0.0", "/home/node/app/discord.js"]

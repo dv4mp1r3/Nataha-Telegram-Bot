@@ -19,7 +19,7 @@ $reader = defined('IS_DEBUG') && IS_DEBUG
     : (new PhpInputReader());
 $db = new \PDO(PDO_MEME_DSN);
 $db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-$logger = new \Misc\EchoLogger();
+$logger = new \Misc\StreamLogger();
 try{
     $seBot = new \Bots\TelegramSecurityExpertBot(
         $reader,
@@ -39,6 +39,6 @@ try{
 }
 catch(\Exception $ex)
 {
-    $logger->log(LOG_ALERT, '', $ex);
+    $logger->log(\Misc\STREAM_STDERR, '', $ex);
 }
 
