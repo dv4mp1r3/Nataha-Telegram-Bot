@@ -2,8 +2,8 @@ services:
   php-telegram:
     build:
       context: ./
-      dockerfile: configs/php74.dockerfile
-      target: php_74_prod
+      dockerfile: configs/php84.dockerfile
+      target: php_84_prod
     image: nataha-php-telegram:1.0
     environment:
       - IS_DEBUG=${IS_DEBUG}
@@ -19,8 +19,8 @@ services:
   php-twitch:
     build:
       context: ./
-      dockerfile: configs/php74.dockerfile
-      target: php_74_prod
+      dockerfile: configs/php84.dockerfile
+      target: php_84_prod
     image: nataha-php-telegram:1.0
     environment:
       - TWITCH_DEFAULT_SERVER=${TWITCH_DEFAULT_SERVER}

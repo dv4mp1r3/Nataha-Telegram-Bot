@@ -6,13 +6,13 @@ cp .env.example .env && nano .env
 
 # docker compose (dev)
 ```
-docker-compose -f docker-compose.74.yaml build --no-cache
+docker compose -f docker-compose.84.dev.yaml build --no-cache
 ```
 
 # minikube
 
 ```
-docker-compose -f docker-compose.74.prod.yaml build --no-cache
+docker compose -f docker-compose.84.yaml build --no-cache
 minikube image load nataha-php-telegram:1.0
 minikube image load nataha-nginx:1.0
 minikube image load nataha-node:1.0

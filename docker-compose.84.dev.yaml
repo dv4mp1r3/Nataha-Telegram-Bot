@@ -1,16 +1,22 @@
 services:
   php-telegram:
     build:
-      target: php_74_dev
+      target: php_84_dev
     volumes:
       - ./php:/var/www
       - ./configs/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+    environment:
+      - PHP_IDE_CONFIG=${PHP_IDE_CONFIG}
+      - XDEBUG_SESSION=1
   php-twitch:
     build:
-      target: php_74_dev
+      target: php_84_dev
     volumes:
       - ./php:/var/www
       - ./configs/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+    environment:
+      - PHP_IDE_CONFIG=${PHP_IDE_CONFIG}
+      - XDEBUG_SESSION=1
   nginx:
     volumes:
     - ./php:/var/www
