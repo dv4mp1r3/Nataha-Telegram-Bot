@@ -6,7 +6,7 @@ cp .env.example .env && nano .env
 
 # docker compose (dev)
 ```
-docker compose -f docker-compose.84.dev.yaml build --no-cache
+docker compose -f docker-compose.84.yaml -f docker-compose.84.dev.yaml build --no-cache
 ```
 
 # minikube
