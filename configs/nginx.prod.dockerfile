@@ -12,7 +12,5 @@ RUN addgroup -S web \
     && mkdir /var/www \
     && chown -R web:web /var/run/nginx.pid /var/cache/nginx /etc/nginx/conf.d
 
-
-COPY ./php/ep.php /var/www/ep.php
 COPY ./configs/nginx.conf /etc/nginx/templates/site.conf.template
 USER web
