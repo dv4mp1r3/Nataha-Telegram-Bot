@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 use Bots\TelegramNeVsratoslavBot;
 use Misc\MarkovChainsTextGenerator;
+use Misc\StreamLogger;
 use pbot\Commands\CommandListener;
 use Commands\HashIdCommand;
 use pbot\Misc\Application;
-use pbot\Misc\Logger;
 use pbot\Misc\Input\FileReader;
 use pbot\Misc\Input\PhpInputReader;
 
@@ -19,8 +19,15 @@ $reader = defined('IS_DEBUG') && IS_DEBUG
     : (new PhpInputReader());
 $db = new \PDO(PDO_MEME_DSN);
 $db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-$logger = new \Misc\StreamLogger();
+$logger = new StreamLogger();
+$sentryDsn = getenv('SENTRY_DSN');
 try{
+    if (!empty($sentryDsn)) {
+        \Sentry\init([
+            'dsn' => $sentryDsn,
+            'send_default_pii' => true,
+        ]);
+    }
     $seBot = new \Bots\TelegramSecurityExpertBot(
         $reader,
         (new CommandListener())->addCommand('/hashid', new HashIdCommand())
@@ -39,6 +46,8 @@ try{
 }
 catch(\Exception $ex)
 {
+    if (!empty($sentryDsn)) {
+        \Sentry\captureException($ex);
+    }
     $logger->log(\Misc\STREAM_STDERR, '', $ex);
 }
-
