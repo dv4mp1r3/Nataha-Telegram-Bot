@@ -10,7 +10,7 @@ RUN addgroup -S web \
     web \
     && touch /var/run/nginx.pid \
     && mkdir /var/www \
-    && chown -R web:web /var/run/nginx.pid /var/cache/nginx /etc/nginx/conf.d
+    && chown -R web:web /var/run/nginx.pid /var/cache/nginx /etc/nginx/conf.d /var/www
 
 COPY ./configs/nginx.conf /etc/nginx/templates/site.conf.template
 USER web
